@@ -1,0 +1,7 @@
+tsconfig.json
+.vscode
+.idea
+example
+node_modules
+.DS_Store
+onebot_idl

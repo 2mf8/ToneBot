@@ -1,6 +1,6 @@
 {
   "name": "tspbbot-for-rq",
-  "version": "2.0.1",
+  "version": "2.0.4",
   "description": "JS/TS 开发QQ机器人",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -18,14 +18,14 @@
     "qqrobot",
     "mirai"
   ],
-  "author": "lz1998 <875543533@qq.com>",
+  "author": "2mf8",
   "bugs": {
-    "url": "https://github.com/ProtobufBot/js-pbbot/issues"
+    "url": "https://github.com/2mf8/tspbbot-for-rq/issues"
   },
-  "homepage": "https://github.com/ProtobufBot/js-pbbot",
+  "homepage": "https://github.com/2mf8/tspbbot-for-rq",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ProtobufBot/js-pbbot.git"
+    "url": "git+https://github.com/2mf8/tspbbot-for-rq.git"
   },
   "license": "ISC",
   "dependencies": {

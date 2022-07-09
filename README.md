@@ -2,6 +2,8 @@
 
 创建nodejs项目
 
+下载源码并解压，然后进入解压目录
+
 安装`npm install`
 
 运行`npm run start`

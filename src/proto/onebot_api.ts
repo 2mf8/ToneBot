@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
-import * as _m0 from "protobufjs/minimal";
 import { Message, MessageReceipt } from "./onebot_base";
+import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "onebot";
 
@@ -25,6 +25,17 @@ export interface SendGroupMsgReq {
 export interface SendGroupMsgResp {
   /** int32 message_id = 1; // 废弃 */
   messageId: MessageReceipt | undefined;
+}
+
+export interface SendChannelMsgReq {
+  guildId: number | string;
+  channelId: number;
+  message: Message[];
+  autoEscape: boolean;
+}
+
+export interface SendChannelMsgResp {
+  messageId: number;
 }
 
 export interface SendMsgReq {
@@ -419,6 +430,20 @@ export interface SetGroupSignInReq {
 
 export interface SetGroupSignInResp {}
 
+export interface SetGroupPokeReq {
+  toUin: number;
+  groupId: number;
+}
+
+export interface SetGroupPokeResp {}
+
+export interface SetFriendPokeReq {
+  toUin: number;
+  aioUin: number;
+}
+
+export interface SetFriendPokeResp {}
+
 function createBaseSendPrivateMsgReq(): SendPrivateMsgReq {
   return { userId: 0, message: [], autoEscape: false };
 }
@@ -706,6 +731,155 @@ export const SendGroupMsgResp = {
       object.messageId !== undefined && object.messageId !== null
         ? MessageReceipt.fromPartial(object.messageId)
         : undefined;
+    return message;
+  },
+};
+
+function createBaseSendChannelMsgReq(): SendChannelMsgReq {
+  return { guildId: 0, channelId: 0, message: [], autoEscape: false };
+}
+
+export const SendChannelMsgReq = {
+  encode(
+    message: SendChannelMsgReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.guildId !== 0) {
+      writer.uint32(8).uint64(message.guildId);
+    }
+    if (message.channelId !== 0) {
+      writer.uint32(16).uint64(message.channelId);
+    }
+    for (const v of message.message) {
+      Message.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.autoEscape === true) {
+      writer.uint32(32).bool(message.autoEscape);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SendChannelMsgReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSendChannelMsgReq();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.guildId = longToNumber(reader.uint64() as Long);
+          break;
+        case 2:
+          message.channelId = longToNumber(reader.uint64() as Long);
+          break;
+        case 3:
+          message.message.push(Message.decode(reader, reader.uint32()));
+          break;
+        case 4:
+          message.autoEscape = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SendChannelMsgReq {
+    return {
+      guildId: isSet(object.guildId) ? Number(object.guildId) : 0,
+      channelId: isSet(object.channelId) ? Number(object.channelId) : 0,
+      message: Array.isArray(object?.message)
+        ? object.message.map((e: any) => Message.fromJSON(e))
+        : [],
+      autoEscape: isSet(object.autoEscape) ? Boolean(object.autoEscape) : false,
+    };
+  },
+
+  toJSON(message: SendChannelMsgReq): unknown {
+    const obj: any = {};
+    message.guildId !== undefined &&
+      (obj.guildId = Math.round(Number(message.guildId)));
+    message.channelId !== undefined &&
+      (obj.channelId = Math.round(message.channelId));
+    if (message.message) {
+      obj.message = message.message.map((e) =>
+        e ? Message.toJSON(e) : undefined
+      );
+    } else {
+      obj.message = [];
+    }
+    message.autoEscape !== undefined && (obj.autoEscape = message.autoEscape);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<SendChannelMsgReq>, I>>(
+    object: I
+  ): SendChannelMsgReq {
+    const message = createBaseSendChannelMsgReq();
+    if (object.guildId == undefined) {
+      object.guildId = 0
+    }
+    message.guildId = object.guildId.toString();
+    message.channelId = object.channelId ?? 0;
+    message.message = object.message?.map((e) => Message.fromPartial(e)) || [];
+    message.autoEscape = object.autoEscape ?? false;
+    return message;
+  },
+};
+
+function createBaseSendChannelMsgResp(): SendChannelMsgResp {
+  return { messageId: 0 };
+}
+
+export const SendChannelMsgResp = {
+  encode(
+    message: SendChannelMsgResp,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.messageId !== 0) {
+      writer.uint32(8).uint64(message.messageId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SendChannelMsgResp {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSendChannelMsgResp();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.messageId = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SendChannelMsgResp {
+    return {
+      messageId: isSet(object.messageId) ? Number(object.messageId) : 0,
+    };
+  },
+
+  toJSON(message: SendChannelMsgResp): unknown {
+    const obj: any = {};
+    message.messageId !== undefined &&
+      (obj.messageId = Math.round(message.messageId));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<SendChannelMsgResp>, I>>(
+    object: I
+  ): SendChannelMsgResp {
+    const message = createBaseSendChannelMsgResp();
+    message.messageId = object.messageId ?? 0;
     return message;
   },
 };
@@ -6334,6 +6508,221 @@ export const SetGroupSignInResp = {
     _: I
   ): SetGroupSignInResp {
     const message = createBaseSetGroupSignInResp();
+    return message;
+  },
+};
+
+function createBaseSetGroupPokeReq(): SetGroupPokeReq {
+  return { toUin: 0, groupId: 0 };
+}
+
+export const SetGroupPokeReq = {
+  encode(
+    message: SetGroupPokeReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.toUin !== 0) {
+      writer.uint32(8).int64(message.toUin);
+    }
+    if (message.groupId !== 0) {
+      writer.uint32(16).int64(message.groupId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetGroupPokeReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSetGroupPokeReq();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.toUin = longToNumber(reader.int64() as Long);
+          break;
+        case 2:
+          message.groupId = longToNumber(reader.int64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SetGroupPokeReq {
+    return {
+      toUin: isSet(object.toUin) ? Number(object.toUin) : 0,
+      groupId: isSet(object.groupId) ? Number(object.groupId) : 0,
+    };
+  },
+
+  toJSON(message: SetGroupPokeReq): unknown {
+    const obj: any = {};
+    message.toUin !== undefined && (obj.toUin = Math.round(message.toUin));
+    message.groupId !== undefined &&
+      (obj.groupId = Math.round(message.groupId));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<SetGroupPokeReq>, I>>(
+    object: I
+  ): SetGroupPokeReq {
+    const message = createBaseSetGroupPokeReq();
+    message.toUin = object.toUin ?? 0;
+    message.groupId = object.groupId ?? 0;
+    return message;
+  },
+};
+
+function createBaseSetGroupPokeResp(): SetGroupPokeResp {
+  return {};
+}
+
+export const SetGroupPokeResp = {
+  encode(
+    _: SetGroupPokeResp,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetGroupPokeResp {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSetGroupPokeResp();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): SetGroupPokeResp {
+    return {};
+  },
+
+  toJSON(_: SetGroupPokeResp): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<SetGroupPokeResp>, I>>(
+    _: I
+  ): SetGroupPokeResp {
+    const message = createBaseSetGroupPokeResp();
+    return message;
+  },
+};
+
+function createBaseSetFriendPokeReq(): SetFriendPokeReq {
+  return { toUin: 0, aioUin: 0 };
+}
+
+export const SetFriendPokeReq = {
+  encode(
+    message: SetFriendPokeReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.toUin !== 0) {
+      writer.uint32(8).int64(message.toUin);
+    }
+    if (message.aioUin !== 0) {
+      writer.uint32(16).int64(message.aioUin);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetFriendPokeReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSetFriendPokeReq();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.toUin = longToNumber(reader.int64() as Long);
+          break;
+        case 2:
+          message.aioUin = longToNumber(reader.int64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SetFriendPokeReq {
+    return {
+      toUin: isSet(object.toUin) ? Number(object.toUin) : 0,
+      aioUin: isSet(object.aioUin) ? Number(object.aioUin) : 0,
+    };
+  },
+
+  toJSON(message: SetFriendPokeReq): unknown {
+    const obj: any = {};
+    message.toUin !== undefined && (obj.toUin = Math.round(message.toUin));
+    message.aioUin !== undefined && (obj.aioUin = Math.round(message.aioUin));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<SetFriendPokeReq>, I>>(
+    object: I
+  ): SetFriendPokeReq {
+    const message = createBaseSetFriendPokeReq();
+    message.toUin = object.toUin ?? 0;
+    message.aioUin = object.aioUin ?? 0;
+    return message;
+  },
+};
+
+function createBaseSetFriendPokeResp(): SetFriendPokeResp {
+  return {};
+}
+
+export const SetFriendPokeResp = {
+  encode(
+    _: SetFriendPokeResp,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetFriendPokeResp {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSetFriendPokeResp();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): SetFriendPokeResp {
+    return {};
+  },
+
+  toJSON(_: SetFriendPokeResp): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<SetFriendPokeResp>, I>>(
+    _: I
+  ): SetFriendPokeResp {
+    const message = createBaseSetFriendPokeResp();
     return message;
   },
 };

@@ -58,4 +58,8 @@ export class EventHandler {
   static async handleGroupRequest(bot: Bot, event: event.GroupRequestEvent | undefined) {
 
   }
+
+  static async handleChannelMessage(bot: Bot, event: event.ChannelMessageEvent | undefined){
+
+  }
 }

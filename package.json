@@ -1,7 +1,7 @@
 {
-  "name": "tspbbot-for-rq",
-  "version": "2.0.4",
-  "description": "JS/TS 开发QQ机器人",
+  "name": "TSPbBot",
+  "version": "0.0.1",
+  "description": "TS 开发QQ机器人",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -20,12 +20,12 @@
   ],
   "author": "2mf8",
   "bugs": {
-    "url": "https://github.com/2mf8/tspbbot-for-rq/issues"
+    "url": "https://github.com/2mf8/TSPbBot/issues"
   },
-  "homepage": "https://github.com/2mf8/tspbbot-for-rq",
+  "homepage": "https://github.com/2mf8/TSPbBot",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/2mf8/tspbbot-for-rq.git"
+    "url": "git+https://github.com/2mf8/TSPbBot.git"
   },
   "license": "ISC",
   "dependencies": {

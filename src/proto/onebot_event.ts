@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
-import * as _m0 from "protobufjs/minimal";
 import { Message, MessageReceipt } from "./onebot_base";
+import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "onebot";
 
@@ -70,6 +70,36 @@ export interface GroupMessageEvent_Sender {
 }
 
 export interface GroupMessageEvent_ExtraEntry {
+  key: string;
+  value: string;
+}
+
+export interface ChannelMessageEvent {
+  id: number;
+  internalId: number;
+  guildId: number | string;
+  channelId: number;
+  time: number;
+  selfId: number;
+  postType: string;
+  messageType: string;
+  subType: string;
+  message: Message[];
+  rawMessage: string;
+  font: number;
+  sender: ChannelMessageEvent_Sender | undefined;
+  messageId: number;
+  extra: { [key: string]: string };
+}
+
+export interface ChannelMessageEvent_Sender {
+  tinyId: number | string;
+  nickname: string;
+  roles: number[];
+  roleNames: string[];
+}
+
+export interface ChannelMessageEvent_ExtraEntry {
   key: string;
   value: string;
 }
@@ -1165,6 +1195,429 @@ export const GroupMessageEvent_ExtraEntry = {
     object: I
   ): GroupMessageEvent_ExtraEntry {
     const message = createBaseGroupMessageEvent_ExtraEntry();
+    message.key = object.key ?? "";
+    message.value = object.value ?? "";
+    return message;
+  },
+};
+
+function createBaseChannelMessageEvent(): ChannelMessageEvent {
+  return {
+    id: 0,
+    internalId: 0,
+    guildId: 0,
+    channelId: 0,
+    time: 0,
+    selfId: 0,
+    postType: "",
+    messageType: "",
+    subType: "",
+    message: [],
+    rawMessage: "",
+    font: 0,
+    sender: undefined,
+    messageId: 0,
+    extra: {},
+  };
+}
+
+export const ChannelMessageEvent = {
+  encode(
+    message: ChannelMessageEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== 0) {
+      writer.uint32(8).uint64(message.id);
+    }
+    if (message.internalId !== 0) {
+      writer.uint32(16).uint64(message.internalId);
+    }
+    if (message.guildId !== 0) {
+      writer.uint32(24).uint64(message.guildId);
+    }
+    if (message.channelId !== 0) {
+      writer.uint32(32).uint64(message.channelId);
+    }
+    if (message.time !== 0) {
+      writer.uint32(40).int64(message.time);
+    }
+    if (message.selfId !== 0) {
+      writer.uint32(48).int64(message.selfId);
+    }
+    if (message.postType !== "") {
+      writer.uint32(58).string(message.postType);
+    }
+    if (message.messageType !== "") {
+      writer.uint32(66).string(message.messageType);
+    }
+    if (message.subType !== "") {
+      writer.uint32(74).string(message.subType);
+    }
+    for (const v of message.message) {
+      Message.encode(v!, writer.uint32(82).fork()).ldelim();
+    }
+    if (message.rawMessage !== "") {
+      writer.uint32(90).string(message.rawMessage);
+    }
+    if (message.font !== 0) {
+      writer.uint32(96).int32(message.font);
+    }
+    if (message.sender !== undefined) {
+      ChannelMessageEvent_Sender.encode(
+        message.sender,
+        writer.uint32(106).fork()
+      ).ldelim();
+    }
+    if (message.messageId !== 0) {
+      writer.uint32(112).uint64(message.messageId);
+    }
+    Object.entries(message.extra).forEach(([key, value]) => {
+      ChannelMessageEvent_ExtraEntry.encode(
+        { key: key as any, value },
+        writer.uint32(2042).fork()
+      ).ldelim();
+    });
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ChannelMessageEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseChannelMessageEvent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = longToNumber(reader.uint64() as Long);
+          break;
+        case 2:
+          message.internalId = longToNumber(reader.uint64() as Long);
+          break;
+        case 3:
+          message.guildId = reader.uint64().toString();
+          break;
+        case 4:
+          message.channelId = longToNumber(reader.uint64() as Long);
+          break;
+        case 5:
+          message.time = longToNumber(reader.int64() as Long);
+          break;
+        case 6:
+          message.selfId = longToNumber(reader.int64() as Long);
+          break;
+        case 7:
+          message.postType = reader.string();
+          break;
+        case 8:
+          message.messageType = reader.string();
+          break;
+        case 9:
+          message.subType = reader.string();
+          break;
+        case 10:
+          message.message.push(Message.decode(reader, reader.uint32()));
+          break;
+        case 11:
+          message.rawMessage = reader.string();
+          break;
+        case 12:
+          message.font = reader.int32();
+          break;
+        case 13:
+          message.sender = ChannelMessageEvent_Sender.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 14:
+          message.messageId = longToNumber(reader.uint64() as Long);
+          break;
+        case 255:
+          const entry255 = ChannelMessageEvent_ExtraEntry.decode(
+            reader,
+            reader.uint32()
+          );
+          if (entry255.value !== undefined) {
+            message.extra[entry255.key] = entry255.value;
+          }
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ChannelMessageEvent {
+    return {
+      id: isSet(object.id) ? Number(object.id) : 0,
+      internalId: isSet(object.internalId) ? Number(object.internalId) : 0,
+      guildId: isSet(object.guildId) ? Number(object.guildId) : 0,
+      channelId: isSet(object.channelId) ? Number(object.channelId) : 0,
+      time: isSet(object.time) ? Number(object.time) : 0,
+      selfId: isSet(object.selfId) ? Number(object.selfId) : 0,
+      postType: isSet(object.postType) ? String(object.postType) : "",
+      messageType: isSet(object.messageType) ? String(object.messageType) : "",
+      subType: isSet(object.subType) ? String(object.subType) : "",
+      message: Array.isArray(object?.message)
+        ? object.message.map((e: any) => Message.fromJSON(e))
+        : [],
+      rawMessage: isSet(object.rawMessage) ? String(object.rawMessage) : "",
+      font: isSet(object.font) ? Number(object.font) : 0,
+      sender: isSet(object.sender)
+        ? ChannelMessageEvent_Sender.fromJSON(object.sender)
+        : undefined,
+      messageId: isSet(object.messageId) ? Number(object.messageId) : 0,
+      extra: isObject(object.extra)
+        ? Object.entries(object.extra).reduce<{ [key: string]: string }>(
+            (acc, [key, value]) => {
+              acc[key] = String(value);
+              return acc;
+            },
+            {}
+          )
+        : {},
+    };
+  },
+
+  toJSON(message: ChannelMessageEvent): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = Math.round(message.id));
+    message.internalId !== undefined &&
+      (obj.internalId = Math.round(message.internalId));
+    message.guildId !== undefined &&
+      (obj.guildId = Math.round(Number(message.guildId)));
+    message.channelId !== undefined &&
+      (obj.channelId = Math.round(message.channelId));
+    message.time !== undefined && (obj.time = Math.round(message.time));
+    message.selfId !== undefined && (obj.selfId = Math.round(message.selfId));
+    message.postType !== undefined && (obj.postType = message.postType);
+    message.messageType !== undefined &&
+      (obj.messageType = message.messageType);
+    message.subType !== undefined && (obj.subType = message.subType);
+    if (message.message) {
+      obj.message = message.message.map((e) =>
+        e ? Message.toJSON(e) : undefined
+      );
+    } else {
+      obj.message = [];
+    }
+    message.rawMessage !== undefined && (obj.rawMessage = message.rawMessage);
+    message.font !== undefined && (obj.font = Math.round(message.font));
+    message.sender !== undefined &&
+      (obj.sender = message.sender
+        ? ChannelMessageEvent_Sender.toJSON(message.sender)
+        : undefined);
+    message.messageId !== undefined &&
+      (obj.messageId = Math.round(message.messageId));
+    obj.extra = {};
+    if (message.extra) {
+      Object.entries(message.extra).forEach(([k, v]) => {
+        obj.extra[k] = v;
+      });
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ChannelMessageEvent>, I>>(
+    object: I
+  ): ChannelMessageEvent {
+    const message = createBaseChannelMessageEvent();
+    message.id = object.id ?? 0;
+    message.internalId = object.internalId ?? 0;
+    message.guildId = object.guildId ?? 0;
+    message.channelId = object.channelId ?? 0;
+    message.time = object.time ?? 0;
+    message.selfId = object.selfId ?? 0;
+    message.postType = object.postType ?? "";
+    message.messageType = object.messageType ?? "";
+    message.subType = object.subType ?? "";
+    message.message = object.message?.map((e) => Message.fromPartial(e)) || [];
+    message.rawMessage = object.rawMessage ?? "";
+    message.font = object.font ?? 0;
+    message.sender =
+      object.sender !== undefined && object.sender !== null
+        ? ChannelMessageEvent_Sender.fromPartial(object.sender)
+        : undefined;
+    message.messageId = object.messageId ?? 0;
+    message.extra = Object.entries(object.extra ?? {}).reduce<{
+      [key: string]: string;
+    }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = String(value);
+      }
+      return acc;
+    }, {});
+    return message;
+  },
+};
+
+function createBaseChannelMessageEvent_Sender(): ChannelMessageEvent_Sender {
+  return { tinyId: 0, nickname: "", roles: [], roleNames: [] };
+}
+
+export const ChannelMessageEvent_Sender = {
+  encode(
+    message: ChannelMessageEvent_Sender,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.tinyId !== 0) {
+      writer.uint32(8).uint64(message.tinyId);
+    }
+    if (message.nickname !== "") {
+      writer.uint32(18).string(message.nickname);
+    }
+    writer.uint32(26).fork();
+    for (const v of message.roles) {
+      writer.uint64(v);
+    }
+    writer.ldelim();
+    for (const v of message.roleNames) {
+      writer.uint32(34).string(v!);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ChannelMessageEvent_Sender {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseChannelMessageEvent_Sender();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.tinyId = reader.uint64().toString();
+          break;
+        case 2:
+          message.nickname = reader.string();
+          break;
+        case 3:
+          if ((tag & 7) === 2) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.roles.push(longToNumber(reader.uint64() as Long));
+            }
+          } else {
+            message.roles.push(longToNumber(reader.uint64() as Long));
+          }
+          break;
+        case 4:
+          message.roleNames.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ChannelMessageEvent_Sender {
+    return {
+      tinyId: isSet(object.tinyId) ? Number(object.tinyId) : 0,
+      nickname: isSet(object.nickname) ? String(object.nickname) : "",
+      roles: Array.isArray(object?.roles)
+        ? object.roles.map((e: any) => Number(e))
+        : [],
+      roleNames: Array.isArray(object?.roleNames)
+        ? object.roleNames.map((e: any) => String(e))
+        : [],
+    };
+  },
+
+  toJSON(message: ChannelMessageEvent_Sender): unknown {
+    const obj: any = {};
+    message.tinyId !== undefined && (obj.tinyId = Math.round(Number(message.tinyId)));
+    message.nickname !== undefined && (obj.nickname = message.nickname);
+    if (message.roles) {
+      obj.roles = message.roles.map((e) => Math.round(e));
+    } else {
+      obj.roles = [];
+    }
+    if (message.roleNames) {
+      obj.roleNames = message.roleNames.map((e) => e);
+    } else {
+      obj.roleNames = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ChannelMessageEvent_Sender>, I>>(
+    object: I
+  ): ChannelMessageEvent_Sender {
+    const message = createBaseChannelMessageEvent_Sender();
+    message.tinyId = object.tinyId ?? 0;
+    message.nickname = object.nickname ?? "";
+    message.roles = object.roles?.map((e) => e) || [];
+    message.roleNames = object.roleNames?.map((e) => e) || [];
+    return message;
+  },
+};
+
+function createBaseChannelMessageEvent_ExtraEntry(): ChannelMessageEvent_ExtraEntry {
+  return { key: "", value: "" };
+}
+
+export const ChannelMessageEvent_ExtraEntry = {
+  encode(
+    message: ChannelMessageEvent_ExtraEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ChannelMessageEvent_ExtraEntry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseChannelMessageEvent_ExtraEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.key = reader.string();
+          break;
+        case 2:
+          message.value = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ChannelMessageEvent_ExtraEntry {
+    return {
+      key: isSet(object.key) ? String(object.key) : "",
+      value: isSet(object.value) ? String(object.value) : "",
+    };
+  },
+
+  toJSON(message: ChannelMessageEvent_ExtraEntry): unknown {
+    const obj: any = {};
+    message.key !== undefined && (obj.key = message.key);
+    message.value !== undefined && (obj.value = message.value);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ChannelMessageEvent_ExtraEntry>, I>>(
+    object: I
+  ): ChannelMessageEvent_ExtraEntry {
+    const message = createBaseChannelMessageEvent_ExtraEntry();
     message.key = object.key ?? "";
     message.value = object.value ?? "";
     return message;

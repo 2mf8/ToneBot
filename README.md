@@ -23,9 +23,9 @@
 
 ## 用Javascript开发
 
-安装`npm i tspbbot-for-rq`
+安装`npm i ts-pbbot`
 ```javascript
-let {EventHandler, Msg, createBotServer} = require("tspbbot-for-rq");
+let {EventHandler, Msg, createBotServer} = require("ts-pbbot");
 
 let port = 8081
 
@@ -70,11 +70,11 @@ console.log(`启动成功，端口：${port}`)
 ```
 ## 用Typescript开发
 
-安装`npm i tspbbot-for-rq`
+安装`npm i ts-pbbot`
 ```typescript
-import { EventHandler } from "tspbbot-for-rq/lib/bot/EventHandler";
-import { createBotServer } from "tspbbot-for-rq/lib/server/BotWsServer";
-import { Msg } from "tspbbot-for-rq/lib/util/Msg";
+import { EventHandler } from "ts-pbbot/lib/bot/EventHandler";
+import { createBotServer } from "ts-pbbot/lib/server/BotWsServer";
+import { Msg } from "ts-pbbot/lib/util/Msg";
 
 let port = 8081
 

@@ -23,3 +23,7 @@ pnpm-debug.log*
 
 #/src/proto/*
 lib
+*.js
+*.d.ts
+
+#/src/

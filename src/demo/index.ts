@@ -136,6 +136,18 @@ EventHandler.handleGroupMessage = async (bot, event) => {
   }
 }
 
+EventHandler.handleChannelMessage = async (bot, event) => {
+  let guildId = event?.guildId
+  let channelId = event?.channelId
+  let userId = event?.sender?.tinyId
+  let rawMsg = event?.rawMessage
+  if (guildId != undefined && channelId != undefined && userId != undefined) {
+    console.log(`收到频道消息，Guilid: ${guildId.toString()}，ChannelId：${channelId.toString()}，发送者: ${userId.toString()}，内容: ${rawMsg}`)
+    await bot.sendChannelMessage(guildId, channelId, "成功", false)
+  }
+}
+
+
 createBotServer(port)
 
 console.log(`启动成功，端口：${port}`)

@@ -28,8 +28,8 @@ export class Bot {
   constructor(botId: number, session: WebSocket) {
     this.waitingFrames = new LRUCache<string, WaitingFrame>({
       max: 500,
-      maxAge: 30 * 1000, // 30秒超时
-      dispose(key: string, value: WaitingFrame) {
+      ttl: 30 * 1000, // 30秒超时
+      dispose(value: WaitingFrame, key: string) {
         value.reject("waiting timeout")
       }
     })
@@ -65,7 +65,7 @@ export class Bot {
       if (!!waitingFrame) {
         waitingFrame.resolve(frame)
       }
-      this.waitingFrames.del(frame.echo as string)
+      this.waitingFrames.delete(frame.echo as string)
     }
   }
 

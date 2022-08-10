@@ -80,7 +80,7 @@ export interface ChannelMessageEvent {
   guildId: number | string;
   channelId: number;
   time: number;
-  selfId: number;
+  selfId: number | string;
   postType: string;
   messageType: string;
   subType: string;
@@ -1303,7 +1303,7 @@ export const ChannelMessageEvent = {
           message.time = longToNumber(reader.int64() as Long);
           break;
         case 6:
-          message.selfId = longToNumber(reader.int64() as Long);
+          message.selfId = reader.uint64().toString();
           break;
         case 7:
           message.postType = reader.string();
@@ -1391,7 +1391,7 @@ export const ChannelMessageEvent = {
     message.channelId !== undefined &&
       (obj.channelId = Math.round(message.channelId));
     message.time !== undefined && (obj.time = Math.round(message.time));
-    message.selfId !== undefined && (obj.selfId = Math.round(message.selfId));
+    message.selfId !== undefined && (obj.selfId = Math.round(Number(message.selfId)));
     message.postType !== undefined && (obj.postType = message.postType);
     message.messageType !== undefined &&
       (obj.messageType = message.messageType);

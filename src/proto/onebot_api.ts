@@ -12,8 +12,8 @@ export interface SendPrivateMsgReq {
 }
 
 export interface SendPrivateMsgResp {
-  /** int32 message_id = 1; // 废弃 */
-  messageId: MessageReceipt | undefined;
+  messageId: number;
+  messageReceipt: MessageReceipt | undefined;
 }
 
 export interface SendGroupMsgReq {
@@ -23,8 +23,8 @@ export interface SendGroupMsgReq {
 }
 
 export interface SendGroupMsgResp {
-  /** int32 message_id = 1; // 废弃 */
-  messageId: MessageReceipt | undefined;
+  messageId: number;
+  messageReceipt: MessageReceipt | undefined;
 }
 
 export interface SendChannelMsgReq {
@@ -47,13 +47,13 @@ export interface SendMsgReq {
 }
 
 export interface SendMsgResp {
-  /** int32 message_id = 1; // 废弃 */
-  messageId: MessageReceipt | undefined;
+  messageId: number;
+  messageReceipt: MessageReceipt | undefined;
 }
 
 export interface DeleteMsgReq {
-  /** int32 message_id = 1; */
-  messageId: MessageReceipt | undefined;
+  messageId: number;
+  messageReceipt: MessageReceipt | undefined;
 }
 
 export interface DeleteMsgResp {}
@@ -430,19 +430,33 @@ export interface SetGroupSignInReq {
 
 export interface SetGroupSignInResp {}
 
-export interface SetGroupPokeReq {
+export interface SendMusicReq {
+  groupId: number;
+  userId: number;
+  type: string;
+  title: string;
+  brief: string;
+  summary: string;
+  url: string;
+  pictureUrl: string;
+  musicUrl: string;
+}
+
+export interface SendMusicResp {}
+
+export interface SendGroupPokeReq {
   toUin: number;
   groupId: number;
 }
 
-export interface SetGroupPokeResp {}
+export interface SendGroupPokeResp {}
 
-export interface SetFriendPokeReq {
+export interface SendFriendPokeReq {
   toUin: number;
   aioUin: number;
 }
 
-export interface SetFriendPokeResp {}
+export interface SendFriendPokeResp {}
 
 function createBaseSendPrivateMsgReq(): SendPrivateMsgReq {
   return { userId: 0, message: [], autoEscape: false };
@@ -525,7 +539,7 @@ export const SendPrivateMsgReq = {
 };
 
 function createBaseSendPrivateMsgResp(): SendPrivateMsgResp {
-  return { messageId: undefined };
+  return { messageId: 0, messageReceipt: undefined };
 }
 
 export const SendPrivateMsgResp = {
@@ -533,9 +547,12 @@ export const SendPrivateMsgResp = {
     message: SendPrivateMsgResp,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.messageId !== undefined) {
+    if (message.messageId !== 0) {
+      writer.uint32(8).int32(message.messageId);
+    }
+    if (message.messageReceipt !== undefined) {
       MessageReceipt.encode(
-        message.messageId,
+        message.messageReceipt,
         writer.uint32(18).fork()
       ).ldelim();
     }
@@ -549,8 +566,14 @@ export const SendPrivateMsgResp = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.messageId = reader.int32();
+          break;
         case 2:
-          message.messageId = MessageReceipt.decode(reader, reader.uint32());
+          message.messageReceipt = MessageReceipt.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -562,8 +585,9 @@ export const SendPrivateMsgResp = {
 
   fromJSON(object: any): SendPrivateMsgResp {
     return {
-      messageId: isSet(object.messageId)
-        ? MessageReceipt.fromJSON(object.messageId)
+      messageId: isSet(object.messageId) ? Number(object.messageId) : 0,
+      messageReceipt: isSet(object.messageReceipt)
+        ? MessageReceipt.fromJSON(object.messageReceipt)
         : undefined,
     };
   },
@@ -571,8 +595,10 @@ export const SendPrivateMsgResp = {
   toJSON(message: SendPrivateMsgResp): unknown {
     const obj: any = {};
     message.messageId !== undefined &&
-      (obj.messageId = message.messageId
-        ? MessageReceipt.toJSON(message.messageId)
+      (obj.messageId = Math.round(message.messageId));
+    message.messageReceipt !== undefined &&
+      (obj.messageReceipt = message.messageReceipt
+        ? MessageReceipt.toJSON(message.messageReceipt)
         : undefined);
     return obj;
   },
@@ -581,9 +607,10 @@ export const SendPrivateMsgResp = {
     object: I
   ): SendPrivateMsgResp {
     const message = createBaseSendPrivateMsgResp();
-    message.messageId =
-      object.messageId !== undefined && object.messageId !== null
-        ? MessageReceipt.fromPartial(object.messageId)
+    message.messageId = object.messageId ?? 0;
+    message.messageReceipt =
+      object.messageReceipt !== undefined && object.messageReceipt !== null
+        ? MessageReceipt.fromPartial(object.messageReceipt)
         : undefined;
     return message;
   },
@@ -671,7 +698,7 @@ export const SendGroupMsgReq = {
 };
 
 function createBaseSendGroupMsgResp(): SendGroupMsgResp {
-  return { messageId: undefined };
+  return { messageId: 0, messageReceipt: undefined };
 }
 
 export const SendGroupMsgResp = {
@@ -679,9 +706,12 @@ export const SendGroupMsgResp = {
     message: SendGroupMsgResp,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.messageId !== undefined) {
+    if (message.messageId !== 0) {
+      writer.uint32(8).int32(message.messageId);
+    }
+    if (message.messageReceipt !== undefined) {
       MessageReceipt.encode(
-        message.messageId,
+        message.messageReceipt,
         writer.uint32(18).fork()
       ).ldelim();
     }
@@ -695,8 +725,14 @@ export const SendGroupMsgResp = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.messageId = reader.int32();
+          break;
         case 2:
-          message.messageId = MessageReceipt.decode(reader, reader.uint32());
+          message.messageReceipt = MessageReceipt.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -708,8 +744,9 @@ export const SendGroupMsgResp = {
 
   fromJSON(object: any): SendGroupMsgResp {
     return {
-      messageId: isSet(object.messageId)
-        ? MessageReceipt.fromJSON(object.messageId)
+      messageId: isSet(object.messageId) ? Number(object.messageId) : 0,
+      messageReceipt: isSet(object.messageReceipt)
+        ? MessageReceipt.fromJSON(object.messageReceipt)
         : undefined,
     };
   },
@@ -717,8 +754,10 @@ export const SendGroupMsgResp = {
   toJSON(message: SendGroupMsgResp): unknown {
     const obj: any = {};
     message.messageId !== undefined &&
-      (obj.messageId = message.messageId
-        ? MessageReceipt.toJSON(message.messageId)
+      (obj.messageId = Math.round(message.messageId));
+    message.messageReceipt !== undefined &&
+      (obj.messageReceipt = message.messageReceipt
+        ? MessageReceipt.toJSON(message.messageReceipt)
         : undefined);
     return obj;
   },
@@ -727,9 +766,10 @@ export const SendGroupMsgResp = {
     object: I
   ): SendGroupMsgResp {
     const message = createBaseSendGroupMsgResp();
-    message.messageId =
-      object.messageId !== undefined && object.messageId !== null
-        ? MessageReceipt.fromPartial(object.messageId)
+    message.messageId = object.messageId ?? 0;
+    message.messageReceipt =
+      object.messageReceipt !== undefined && object.messageReceipt !== null
+        ? MessageReceipt.fromPartial(object.messageReceipt)
         : undefined;
     return message;
   },
@@ -767,7 +807,7 @@ export const SendChannelMsgReq = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.guildId = longToNumber(reader.uint64() as Long);
+          message.guildId = reader.uint64().toString();
           break;
         case 2:
           message.channelId = longToNumber(reader.uint64() as Long);
@@ -818,10 +858,7 @@ export const SendChannelMsgReq = {
     object: I
   ): SendChannelMsgReq {
     const message = createBaseSendChannelMsgReq();
-    if (object.guildId == undefined) {
-      object.guildId = 0
-    }
-    message.guildId = object.guildId.toString();
+    message.guildId = object.guildId ?? 0;
     message.channelId = object.channelId ?? 0;
     message.message = object.message?.map((e) => Message.fromPartial(e)) || [];
     message.autoEscape = object.autoEscape ?? false;
@@ -991,7 +1028,7 @@ export const SendMsgReq = {
 };
 
 function createBaseSendMsgResp(): SendMsgResp {
-  return { messageId: undefined };
+  return { messageId: 0, messageReceipt: undefined };
 }
 
 export const SendMsgResp = {
@@ -999,9 +1036,12 @@ export const SendMsgResp = {
     message: SendMsgResp,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.messageId !== undefined) {
+    if (message.messageId !== 0) {
+      writer.uint32(8).int32(message.messageId);
+    }
+    if (message.messageReceipt !== undefined) {
       MessageReceipt.encode(
-        message.messageId,
+        message.messageReceipt,
         writer.uint32(18).fork()
       ).ldelim();
     }
@@ -1015,8 +1055,14 @@ export const SendMsgResp = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.messageId = reader.int32();
+          break;
         case 2:
-          message.messageId = MessageReceipt.decode(reader, reader.uint32());
+          message.messageReceipt = MessageReceipt.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -1028,8 +1074,9 @@ export const SendMsgResp = {
 
   fromJSON(object: any): SendMsgResp {
     return {
-      messageId: isSet(object.messageId)
-        ? MessageReceipt.fromJSON(object.messageId)
+      messageId: isSet(object.messageId) ? Number(object.messageId) : 0,
+      messageReceipt: isSet(object.messageReceipt)
+        ? MessageReceipt.fromJSON(object.messageReceipt)
         : undefined,
     };
   },
@@ -1037,8 +1084,10 @@ export const SendMsgResp = {
   toJSON(message: SendMsgResp): unknown {
     const obj: any = {};
     message.messageId !== undefined &&
-      (obj.messageId = message.messageId
-        ? MessageReceipt.toJSON(message.messageId)
+      (obj.messageId = Math.round(message.messageId));
+    message.messageReceipt !== undefined &&
+      (obj.messageReceipt = message.messageReceipt
+        ? MessageReceipt.toJSON(message.messageReceipt)
         : undefined);
     return obj;
   },
@@ -1047,16 +1096,17 @@ export const SendMsgResp = {
     object: I
   ): SendMsgResp {
     const message = createBaseSendMsgResp();
-    message.messageId =
-      object.messageId !== undefined && object.messageId !== null
-        ? MessageReceipt.fromPartial(object.messageId)
+    message.messageId = object.messageId ?? 0;
+    message.messageReceipt =
+      object.messageReceipt !== undefined && object.messageReceipt !== null
+        ? MessageReceipt.fromPartial(object.messageReceipt)
         : undefined;
     return message;
   },
 };
 
 function createBaseDeleteMsgReq(): DeleteMsgReq {
-  return { messageId: undefined };
+  return { messageId: 0, messageReceipt: undefined };
 }
 
 export const DeleteMsgReq = {
@@ -1064,9 +1114,12 @@ export const DeleteMsgReq = {
     message: DeleteMsgReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.messageId !== undefined) {
+    if (message.messageId !== 0) {
+      writer.uint32(8).int32(message.messageId);
+    }
+    if (message.messageReceipt !== undefined) {
       MessageReceipt.encode(
-        message.messageId,
+        message.messageReceipt,
         writer.uint32(18).fork()
       ).ldelim();
     }
@@ -1080,8 +1133,14 @@ export const DeleteMsgReq = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.messageId = reader.int32();
+          break;
         case 2:
-          message.messageId = MessageReceipt.decode(reader, reader.uint32());
+          message.messageReceipt = MessageReceipt.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -1093,8 +1152,9 @@ export const DeleteMsgReq = {
 
   fromJSON(object: any): DeleteMsgReq {
     return {
-      messageId: isSet(object.messageId)
-        ? MessageReceipt.fromJSON(object.messageId)
+      messageId: isSet(object.messageId) ? Number(object.messageId) : 0,
+      messageReceipt: isSet(object.messageReceipt)
+        ? MessageReceipt.fromJSON(object.messageReceipt)
         : undefined,
     };
   },
@@ -1102,8 +1162,10 @@ export const DeleteMsgReq = {
   toJSON(message: DeleteMsgReq): unknown {
     const obj: any = {};
     message.messageId !== undefined &&
-      (obj.messageId = message.messageId
-        ? MessageReceipt.toJSON(message.messageId)
+      (obj.messageId = Math.round(message.messageId));
+    message.messageReceipt !== undefined &&
+      (obj.messageReceipt = message.messageReceipt
+        ? MessageReceipt.toJSON(message.messageReceipt)
         : undefined);
     return obj;
   },
@@ -1112,9 +1174,10 @@ export const DeleteMsgReq = {
     object: I
   ): DeleteMsgReq {
     const message = createBaseDeleteMsgReq();
-    message.messageId =
-      object.messageId !== undefined && object.messageId !== null
-        ? MessageReceipt.fromPartial(object.messageId)
+    message.messageId = object.messageId ?? 0;
+    message.messageReceipt =
+      object.messageReceipt !== undefined && object.messageReceipt !== null
+        ? MessageReceipt.fromPartial(object.messageReceipt)
         : undefined;
     return message;
   },
@@ -6512,13 +6575,194 @@ export const SetGroupSignInResp = {
   },
 };
 
-function createBaseSetGroupPokeReq(): SetGroupPokeReq {
+function createBaseSendMusicReq(): SendMusicReq {
+  return {
+    groupId: 0,
+    userId: 0,
+    type: "",
+    title: "",
+    brief: "",
+    summary: "",
+    url: "",
+    pictureUrl: "",
+    musicUrl: "",
+  };
+}
+
+export const SendMusicReq = {
+  encode(
+    message: SendMusicReq,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.groupId !== 0) {
+      writer.uint32(8).int64(message.groupId);
+    }
+    if (message.userId !== 0) {
+      writer.uint32(16).int64(message.userId);
+    }
+    if (message.type !== "") {
+      writer.uint32(26).string(message.type);
+    }
+    if (message.title !== "") {
+      writer.uint32(34).string(message.title);
+    }
+    if (message.brief !== "") {
+      writer.uint32(42).string(message.brief);
+    }
+    if (message.summary !== "") {
+      writer.uint32(50).string(message.summary);
+    }
+    if (message.url !== "") {
+      writer.uint32(58).string(message.url);
+    }
+    if (message.pictureUrl !== "") {
+      writer.uint32(66).string(message.pictureUrl);
+    }
+    if (message.musicUrl !== "") {
+      writer.uint32(74).string(message.musicUrl);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SendMusicReq {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSendMusicReq();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.groupId = longToNumber(reader.int64() as Long);
+          break;
+        case 2:
+          message.userId = longToNumber(reader.int64() as Long);
+          break;
+        case 3:
+          message.type = reader.string();
+          break;
+        case 4:
+          message.title = reader.string();
+          break;
+        case 5:
+          message.brief = reader.string();
+          break;
+        case 6:
+          message.summary = reader.string();
+          break;
+        case 7:
+          message.url = reader.string();
+          break;
+        case 8:
+          message.pictureUrl = reader.string();
+          break;
+        case 9:
+          message.musicUrl = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SendMusicReq {
+    return {
+      groupId: isSet(object.groupId) ? Number(object.groupId) : 0,
+      userId: isSet(object.userId) ? Number(object.userId) : 0,
+      type: isSet(object.type) ? String(object.type) : "",
+      title: isSet(object.title) ? String(object.title) : "",
+      brief: isSet(object.brief) ? String(object.brief) : "",
+      summary: isSet(object.summary) ? String(object.summary) : "",
+      url: isSet(object.url) ? String(object.url) : "",
+      pictureUrl: isSet(object.pictureUrl) ? String(object.pictureUrl) : "",
+      musicUrl: isSet(object.musicUrl) ? String(object.musicUrl) : "",
+    };
+  },
+
+  toJSON(message: SendMusicReq): unknown {
+    const obj: any = {};
+    message.groupId !== undefined &&
+      (obj.groupId = Math.round(message.groupId));
+    message.userId !== undefined && (obj.userId = Math.round(message.userId));
+    message.type !== undefined && (obj.type = message.type);
+    message.title !== undefined && (obj.title = message.title);
+    message.brief !== undefined && (obj.brief = message.brief);
+    message.summary !== undefined && (obj.summary = message.summary);
+    message.url !== undefined && (obj.url = message.url);
+    message.pictureUrl !== undefined && (obj.pictureUrl = message.pictureUrl);
+    message.musicUrl !== undefined && (obj.musicUrl = message.musicUrl);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<SendMusicReq>, I>>(
+    object: I
+  ): SendMusicReq {
+    const message = createBaseSendMusicReq();
+    message.groupId = object.groupId ?? 0;
+    message.userId = object.userId ?? 0;
+    message.type = object.type ?? "";
+    message.title = object.title ?? "";
+    message.brief = object.brief ?? "";
+    message.summary = object.summary ?? "";
+    message.url = object.url ?? "";
+    message.pictureUrl = object.pictureUrl ?? "";
+    message.musicUrl = object.musicUrl ?? "";
+    return message;
+  },
+};
+
+function createBaseSendMusicResp(): SendMusicResp {
+  return {};
+}
+
+export const SendMusicResp = {
+  encode(
+    _: SendMusicResp,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SendMusicResp {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSendMusicResp();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): SendMusicResp {
+    return {};
+  },
+
+  toJSON(_: SendMusicResp): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<SendMusicResp>, I>>(
+    _: I
+  ): SendMusicResp {
+    const message = createBaseSendMusicResp();
+    return message;
+  },
+};
+
+function createBaseSendGroupPokeReq(): SendGroupPokeReq {
   return { toUin: 0, groupId: 0 };
 }
 
-export const SetGroupPokeReq = {
+export const SendGroupPokeReq = {
   encode(
-    message: SetGroupPokeReq,
+    message: SendGroupPokeReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.toUin !== 0) {
@@ -6530,10 +6774,10 @@ export const SetGroupPokeReq = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): SetGroupPokeReq {
+  decode(input: _m0.Reader | Uint8Array, length?: number): SendGroupPokeReq {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSetGroupPokeReq();
+    const message = createBaseSendGroupPokeReq();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -6551,14 +6795,14 @@ export const SetGroupPokeReq = {
     return message;
   },
 
-  fromJSON(object: any): SetGroupPokeReq {
+  fromJSON(object: any): SendGroupPokeReq {
     return {
       toUin: isSet(object.toUin) ? Number(object.toUin) : 0,
       groupId: isSet(object.groupId) ? Number(object.groupId) : 0,
     };
   },
 
-  toJSON(message: SetGroupPokeReq): unknown {
+  toJSON(message: SendGroupPokeReq): unknown {
     const obj: any = {};
     message.toUin !== undefined && (obj.toUin = Math.round(message.toUin));
     message.groupId !== undefined &&
@@ -6566,32 +6810,32 @@ export const SetGroupPokeReq = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<SetGroupPokeReq>, I>>(
+  fromPartial<I extends Exact<DeepPartial<SendGroupPokeReq>, I>>(
     object: I
-  ): SetGroupPokeReq {
-    const message = createBaseSetGroupPokeReq();
+  ): SendGroupPokeReq {
+    const message = createBaseSendGroupPokeReq();
     message.toUin = object.toUin ?? 0;
     message.groupId = object.groupId ?? 0;
     return message;
   },
 };
 
-function createBaseSetGroupPokeResp(): SetGroupPokeResp {
+function createBaseSendGroupPokeResp(): SendGroupPokeResp {
   return {};
 }
 
-export const SetGroupPokeResp = {
+export const SendGroupPokeResp = {
   encode(
-    _: SetGroupPokeResp,
+    _: SendGroupPokeResp,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): SetGroupPokeResp {
+  decode(input: _m0.Reader | Uint8Array, length?: number): SendGroupPokeResp {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSetGroupPokeResp();
+    const message = createBaseSendGroupPokeResp();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -6603,30 +6847,30 @@ export const SetGroupPokeResp = {
     return message;
   },
 
-  fromJSON(_: any): SetGroupPokeResp {
+  fromJSON(_: any): SendGroupPokeResp {
     return {};
   },
 
-  toJSON(_: SetGroupPokeResp): unknown {
+  toJSON(_: SendGroupPokeResp): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<SetGroupPokeResp>, I>>(
+  fromPartial<I extends Exact<DeepPartial<SendGroupPokeResp>, I>>(
     _: I
-  ): SetGroupPokeResp {
-    const message = createBaseSetGroupPokeResp();
+  ): SendGroupPokeResp {
+    const message = createBaseSendGroupPokeResp();
     return message;
   },
 };
 
-function createBaseSetFriendPokeReq(): SetFriendPokeReq {
+function createBaseSendFriendPokeReq(): SendFriendPokeReq {
   return { toUin: 0, aioUin: 0 };
 }
 
-export const SetFriendPokeReq = {
+export const SendFriendPokeReq = {
   encode(
-    message: SetFriendPokeReq,
+    message: SendFriendPokeReq,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.toUin !== 0) {
@@ -6638,10 +6882,10 @@ export const SetFriendPokeReq = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): SetFriendPokeReq {
+  decode(input: _m0.Reader | Uint8Array, length?: number): SendFriendPokeReq {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSetFriendPokeReq();
+    const message = createBaseSendFriendPokeReq();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -6659,46 +6903,46 @@ export const SetFriendPokeReq = {
     return message;
   },
 
-  fromJSON(object: any): SetFriendPokeReq {
+  fromJSON(object: any): SendFriendPokeReq {
     return {
       toUin: isSet(object.toUin) ? Number(object.toUin) : 0,
       aioUin: isSet(object.aioUin) ? Number(object.aioUin) : 0,
     };
   },
 
-  toJSON(message: SetFriendPokeReq): unknown {
+  toJSON(message: SendFriendPokeReq): unknown {
     const obj: any = {};
     message.toUin !== undefined && (obj.toUin = Math.round(message.toUin));
     message.aioUin !== undefined && (obj.aioUin = Math.round(message.aioUin));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<SetFriendPokeReq>, I>>(
+  fromPartial<I extends Exact<DeepPartial<SendFriendPokeReq>, I>>(
     object: I
-  ): SetFriendPokeReq {
-    const message = createBaseSetFriendPokeReq();
+  ): SendFriendPokeReq {
+    const message = createBaseSendFriendPokeReq();
     message.toUin = object.toUin ?? 0;
     message.aioUin = object.aioUin ?? 0;
     return message;
   },
 };
 
-function createBaseSetFriendPokeResp(): SetFriendPokeResp {
+function createBaseSendFriendPokeResp(): SendFriendPokeResp {
   return {};
 }
 
-export const SetFriendPokeResp = {
+export const SendFriendPokeResp = {
   encode(
-    _: SetFriendPokeResp,
+    _: SendFriendPokeResp,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): SetFriendPokeResp {
+  decode(input: _m0.Reader | Uint8Array, length?: number): SendFriendPokeResp {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSetFriendPokeResp();
+    const message = createBaseSendFriendPokeResp();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -6710,19 +6954,19 @@ export const SetFriendPokeResp = {
     return message;
   },
 
-  fromJSON(_: any): SetFriendPokeResp {
+  fromJSON(_: any): SendFriendPokeResp {
     return {};
   },
 
-  toJSON(_: SetFriendPokeResp): unknown {
+  toJSON(_: SendFriendPokeResp): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<SetFriendPokeResp>, I>>(
+  fromPartial<I extends Exact<DeepPartial<SendFriendPokeResp>, I>>(
     _: I
-  ): SetFriendPokeResp {
-    const message = createBaseSetFriendPokeResp();
+  ): SendFriendPokeResp {
+    const message = createBaseSendFriendPokeResp();
     return message;
   },
 };
@@ -6760,10 +7004,9 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
-        Exclude<keyof I, KeysOfUnion<P>>,
-        never
-      >;
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 function longToNumber(long: Long): number {
   if (long.gt(Number.MAX_SAFE_INTEGER)) {

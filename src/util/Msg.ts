@@ -164,7 +164,19 @@ export class Msg {
     return this
   }
 
+  /** GMC 专用 */
   reply(messageId: number): Msg {
+    this.messageList.push({
+      type: "reply",
+      data: {
+        "message_id": messageId.toString()
+      }
+    })
+    return this
+  }
+
+  /** GMC 1.1.0 以上版本和pbrq皆可用 */
+  replyByMessageReceipt(messageId: MessageReceipt): Msg {
     this.messageList.push({
       type: "reply",
       data: {

@@ -60,6 +60,8 @@ export class Bot {
     !!frame.friendRequestEvent && await EventHandler.handleFriendRequest(this, frame.friendRequestEvent)
     !!frame.groupRequestEvent && await EventHandler.handleGroupRequest(this, frame.groupRequestEvent)
     !!frame.channelMessageEvent && await EventHandler.handleChannelMessage(this, frame.channelMessageEvent)
+    !!frame.groupTempMessageEvent && await EventHandler.handleGroupTempMessage(this, frame.groupTempMessageEvent)
+    !!frame.groupNotifyEvent && await EventHandler.handleGroupNotify(this, frame.groupNotifyEvent)
     if ((frame.frameType || 0) > 200) {
       let waitingFrame = this.waitingFrames.get(frame.echo as string)
       if (!!waitingFrame) {
@@ -194,12 +196,16 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.sendPrivateMsgResp || null)
       .catch(() => null)
   }
@@ -309,21 +315,27 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.sendGroupMsgResp || null)
       .catch(() => null)
   }
 
-  async deleteMsg(messageId: MessageReceipt): Promise<Api.DeleteMsgResp | null> {
+  /** GMC专用*/
+  async deleteMsg(messageId: number): Promise<Api.DeleteMsgResp | null> {
     return await this.sendFrameAndWait({
       frameType: FrameType.TDeleteMsgReq,
       deleteMsgReq: {
         messageId: messageId,
+        messageReceipt: undefined,
       },
       botId: 0,
       echo: "",
@@ -419,12 +431,132 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
+    }).then(resp => resp.deleteMsgResp || null)
+      .catch(() => null)
+  }
+
+  /** GMC 1.1.0 以上版本和pbrq皆可用*/
+  async deleteMsgByMessageReceipt(messageId: MessageReceipt): Promise<Api.DeleteMsgResp | null> {
+    return await this.sendFrameAndWait({
+      frameType: FrameType.TDeleteMsgReq,
+      deleteMsgReq: {
+        messageId: 0,
+        messageReceipt: messageId,
+      },
+      botId: 0,
+      echo: "",
+      ok: false,
+      extra: {},
+      privateMessageEvent: undefined,
+      groupMessageEvent: undefined,
+      groupUploadNoticeEvent: undefined,
+      groupAdminNoticeEvent: undefined,
+      groupDecreaseNoticeEvent: undefined,
+      groupIncreaseNoticeEvent: undefined,
+      groupBanNoticeEvent: undefined,
+      friendAddNoticeEvent: undefined,
+      groupRecallNoticeEvent: undefined,
+      friendRecallNoticeEvent: undefined,
+      friendRequestEvent: undefined,
+      groupRequestEvent: undefined,
+      sendPrivateMsgReq: undefined,
+      sendGroupMsgReq: undefined,
+      sendMsgReq: undefined,
+      getMsgReq: undefined,
+      getForwardMsgReq: undefined,
+      sendLikeReq: undefined,
+      setGroupKickReq: undefined,
+      setGroupBanReq: undefined,
+      setGroupAnonymousBanReq: undefined,
+      setGroupWholeBanReq: undefined,
+      setGroupAdminReq: undefined,
+      setGroupAnonymousReq: undefined,
+      setGroupCardReq: undefined,
+      setGroupNameReq: undefined,
+      setGroupLeaveReq: undefined,
+      setGroupSpecialTitleReq: undefined,
+      setFriendAddRequestReq: undefined,
+      setGroupAddRequestReq: undefined,
+      getLoginInfoReq: undefined,
+      getStrangerInfoReq: undefined,
+      getFriendListReq: undefined,
+      getGroupInfoReq: undefined,
+      getGroupListReq: undefined,
+      getGroupMemberInfoReq: undefined,
+      getGroupMemberListReq: undefined,
+      getGroupHonorInfoReq: undefined,
+      getCookiesReq: undefined,
+      getCsrfTokenReq: undefined,
+      getCredentialsReq: undefined,
+      getRecordReq: undefined,
+      getImageReq: undefined,
+      canSendImageReq: undefined,
+      canSendRecordReq: undefined,
+      getStatusReq: undefined,
+      getVersionInfoReq: undefined,
+      setRestartReq: undefined,
+      cleanCacheReq: undefined,
+      setGroupSignInReq: undefined,
+      sendPrivateMsgResp: undefined,
+      sendGroupMsgResp: undefined,
+      sendMsgResp: undefined,
+      deleteMsgResp: undefined,
+      getMsgResp: undefined,
+      getForwardMsgResp: undefined,
+      sendLikeResp: undefined,
+      setGroupKickResp: undefined,
+      setGroupBanResp: undefined,
+      setGroupAnonymousBanResp: undefined,
+      setGroupWholeBanResp: undefined,
+      setGroupAdminResp: undefined,
+      setGroupAnonymousResp: undefined,
+      setGroupCardResp: undefined,
+      setGroupNameResp: undefined,
+      setGroupLeaveResp: undefined,
+      setGroupSpecialTitleResp: undefined,
+      setFriendAddRequestResp: undefined,
+      setGroupAddRequestResp: undefined,
+      getLoginInfoResp: undefined,
+      getStrangerInfoResp: undefined,
+      getFriendListResp: undefined,
+      getGroupInfoResp: undefined,
+      getGroupListResp: undefined,
+      getGroupMemberInfoResp: undefined,
+      getGroupMemberListResp: undefined,
+      getGroupHonorInfoResp: undefined,
+      getCookiesResp: undefined,
+      getCsrfTokenResp: undefined,
+      getCredentialsResp: undefined,
+      getRecordResp: undefined,
+      getImageResp: undefined,
+      canSendImageResp: undefined,
+      canSendRecordResp: undefined,
+      getStatusResp: undefined,
+      getVersionInfoResp: undefined,
+      setRestartResp: undefined,
+      cleanCacheResp: undefined,
+      setGroupSignInResp: undefined,
+      channelMessageEvent: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
+      sendChannelMsgReq: undefined,
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.deleteMsgResp || null)
       .catch(() => null)
   }
@@ -529,12 +661,16 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.getMsgResp || null)
       .catch(() => null)
   }
@@ -642,12 +778,16 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.setGroupKickResp || null)
       .catch(() => null)
   }
@@ -754,12 +894,16 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.setGroupBanResp || null)
       .catch(() => null)
   }
@@ -865,12 +1009,16 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.setGroupWholeBanResp || null)
       .catch(() => null)
   }
@@ -977,12 +1125,16 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.setGroupCardResp || null)
       .catch(() => null)
   }
@@ -1088,12 +1240,16 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.setGroupLeaveResp || null)
       .catch(() => null)
   }
@@ -1201,12 +1357,16 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.setGroupSpecialTitleResp || null)
       .catch(() => null)
   }
@@ -1313,12 +1473,16 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.setFriendAddRequestResp || null)
       .catch(() => null)
   }
@@ -1427,12 +1591,16 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.setGroupAddRequestResp || null)
       .catch(() => null)
   }
@@ -1535,12 +1703,16 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.getLoginInfoResp || null)
       .catch(() => null)
   }
@@ -1646,12 +1818,16 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.getStrangerInfoResp || null)
       .catch(() => null)
   }
@@ -1754,12 +1930,16 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.getFriendListResp || null)
       .catch(() => null)
   }
@@ -1862,12 +2042,16 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.getGroupListResp || null)
       .catch(() => null)
   }
@@ -1973,12 +2157,16 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.getGroupInfoResp || null)
       .catch(() => null)
   }
@@ -2085,12 +2273,16 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.getGroupMemberInfoResp || null)
       .catch(() => null)
   }
@@ -2195,12 +2387,16 @@ export class Bot {
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
       channelMessageEvent: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendChannelMsgReq: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.getGroupMemberListResp || null)
       .catch(() => null)
   }
@@ -2273,8 +2469,8 @@ export class Bot {
       setRestartReq: undefined,
       cleanCacheReq: undefined,
       setGroupSignInReq: undefined,
-      setGroupPokeReq: undefined,
-      setFriendPokeReq: undefined,
+      sendGroupPokeReq: undefined,
+      sendFriendPokeReq: undefined,
       sendPrivateMsgResp: undefined,
       sendGroupMsgResp: undefined,
       sendMsgResp: undefined,
@@ -2314,9 +2510,13 @@ export class Bot {
       setRestartResp: undefined,
       cleanCacheResp: undefined,
       setGroupSignInResp: undefined,
-      setGroupPokeResp: undefined,
-      setFriendPokeResp: undefined,
-      sendChannelMsgResp: undefined
+      sendGroupPokeResp: undefined,
+      sendFriendPokeResp: undefined,
+      sendChannelMsgResp: undefined,
+      groupTempMessageEvent: undefined,
+      groupNotifyEvent: undefined,
+      sendMusicReq: undefined,
+      sendMusicResp: undefined
     }).then(resp => resp.sendChannelMsgResp || null)
       .catch(() => null)
   }

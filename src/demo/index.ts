@@ -29,6 +29,7 @@ EventHandler.handleGroupMessage = async (bot, event) => {
   let groupId = event?.groupId
   let message_id = event?.messageId
   var role: string
+  console.log(event)
   if (userId != undefined && groupId != undefined && rawMsg != undefined){
     console.log(`收到群聊消息，群号: ${groupId.toString()}，发送者: ${userId.toString()}，内容: ${rawMsg}`)
     let userInfo = bot.getGroupMemberInfo(groupId, userId, true)

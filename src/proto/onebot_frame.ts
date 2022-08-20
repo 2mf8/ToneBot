@@ -13,6 +13,8 @@ import {
   FriendRecallNoticeEvent,
   FriendRequestEvent,
   GroupRequestEvent,
+  GroupTempMessageEvent,
+  GroupNotifyEvent,
   ChannelMessageEvent,
 } from "./onebot_event";
 import {
@@ -55,8 +57,9 @@ import {
   SetRestartReq,
   CleanCacheReq,
   SetGroupSignInReq,
-  SetGroupPokeReq,
-  SetFriendPokeReq,
+  SendMusicReq,
+  SendGroupPokeReq,
+  SendFriendPokeReq,
   SendChannelMsgReq,
   SendPrivateMsgResp,
   SendGroupMsgResp,
@@ -97,8 +100,9 @@ import {
   SetRestartResp,
   CleanCacheResp,
   SetGroupSignInResp,
-  SetGroupPokeResp,
-  SetFriendPokeResp,
+  SendMusicResp,
+  SendGroupPokeResp,
+  SendFriendPokeResp,
   SendChannelMsgResp,
 } from "./onebot_api";
 import _m0 from "protobufjs/minimal";
@@ -124,6 +128,8 @@ export interface Frame {
   friendRecallNoticeEvent: FriendRecallNoticeEvent | undefined;
   friendRequestEvent: FriendRequestEvent | undefined;
   groupRequestEvent: GroupRequestEvent | undefined;
+  groupTempMessageEvent: GroupTempMessageEvent | undefined;
+  groupNotifyEvent: GroupNotifyEvent | undefined;
   channelMessageEvent: ChannelMessageEvent | undefined;
   sendPrivateMsgReq: SendPrivateMsgReq | undefined;
   sendGroupMsgReq: SendGroupMsgReq | undefined;
@@ -164,8 +170,9 @@ export interface Frame {
   setRestartReq: SetRestartReq | undefined;
   cleanCacheReq: CleanCacheReq | undefined;
   setGroupSignInReq: SetGroupSignInReq | undefined;
-  setGroupPokeReq: SetGroupPokeReq | undefined;
-  setFriendPokeReq: SetFriendPokeReq | undefined;
+  sendMusicReq: SendMusicReq | undefined;
+  sendGroupPokeReq: SendGroupPokeReq | undefined;
+  sendFriendPokeReq: SendFriendPokeReq | undefined;
   sendChannelMsgReq: SendChannelMsgReq | undefined;
   sendPrivateMsgResp: SendPrivateMsgResp | undefined;
   sendGroupMsgResp: SendGroupMsgResp | undefined;
@@ -206,8 +213,9 @@ export interface Frame {
   setRestartResp: SetRestartResp | undefined;
   cleanCacheResp: CleanCacheResp | undefined;
   setGroupSignInResp: SetGroupSignInResp | undefined;
-  setGroupPokeResp: SetGroupPokeResp | undefined;
-  setFriendPokeResp: SetFriendPokeResp | undefined;
+  sendMusicResp: SendMusicResp | undefined;
+  sendGroupPokeResp: SendGroupPokeResp | undefined;
+  sendFriendPokeResp: SendFriendPokeResp | undefined;
   sendChannelMsgResp: SendChannelMsgResp | undefined;
 }
 
@@ -225,7 +233,9 @@ export enum Frame_FrameType {
   TFriendRecallNoticeEvent = 110,
   TFriendRequestEvent = 111,
   TGroupRequestEvent = 112,
-  TChannelMessageEvent = 113,
+  TGroupTempMessageEvent = 113,
+  TGroupNotifyEvent = 114,
+  TChannelMessageEvent = 115,
   TSendPrivateMsgReq = 201,
   TSendGroupMsgReq = 202,
   TSendMsgReq = 203,
@@ -265,9 +275,10 @@ export enum Frame_FrameType {
   TSetRestartReq = 237,
   TCleanCacheReq = 238,
   TSetGroupSignInReq = 239,
-  TSetGroupPokeReq = 240,
-  TSetFriendPokeReq = 241,
-  TSendChannelMsgReq = 242,
+  TSendMusicReq = 240,
+  TSendGroupPokeReq = 241,
+  TSendFriendPokeReq = 242,
+  TSendChannelMsgReq = 243,
   TSendPrivateMsgResp = 301,
   TSendGroupMsgResp = 302,
   TSendMsgResp = 303,
@@ -307,9 +318,10 @@ export enum Frame_FrameType {
   TSetRestartResp = 337,
   TCleanCacheResp = 338,
   TSetGroupSignInResp = 339,
-  TSetGroupPokeResp = 340,
-  TSetFriendPokeResp = 341,
-  TSendChannelMsgResp = 342,
+  TSendMusicResp = 340,
+  TSendGroupPokeResp = 341,
+  TSendFriendPokeResp = 342,
+  TSendChannelMsgResp = 343,
   UNRECOGNIZED = -1,
 }
 
@@ -355,6 +367,12 @@ export function frame_FrameTypeFromJSON(object: any): Frame_FrameType {
     case "TGroupRequestEvent":
       return Frame_FrameType.TGroupRequestEvent;
     case 113:
+    case "TGroupTempMessageEvent":
+      return Frame_FrameType.TGroupTempMessageEvent;
+    case 114:
+    case "TGroupNotifyEvent":
+      return Frame_FrameType.TGroupNotifyEvent;
+    case 115:
     case "TChannelMessageEvent":
       return Frame_FrameType.TChannelMessageEvent;
     case 201:
@@ -475,12 +493,15 @@ export function frame_FrameTypeFromJSON(object: any): Frame_FrameType {
     case "TSetGroupSignInReq":
       return Frame_FrameType.TSetGroupSignInReq;
     case 240:
-    case "TSetGroupPokeReq":
-      return Frame_FrameType.TSetGroupPokeReq;
+    case "TSendMusicReq":
+      return Frame_FrameType.TSendMusicReq;
     case 241:
-    case "TSetFriendPokeReq":
-      return Frame_FrameType.TSetFriendPokeReq;
+    case "TSendGroupPokeReq":
+      return Frame_FrameType.TSendGroupPokeReq;
     case 242:
+    case "TSendFriendPokeReq":
+      return Frame_FrameType.TSendFriendPokeReq;
+    case 243:
     case "TSendChannelMsgReq":
       return Frame_FrameType.TSendChannelMsgReq;
     case 301:
@@ -601,12 +622,15 @@ export function frame_FrameTypeFromJSON(object: any): Frame_FrameType {
     case "TSetGroupSignInResp":
       return Frame_FrameType.TSetGroupSignInResp;
     case 340:
-    case "TSetGroupPokeResp":
-      return Frame_FrameType.TSetGroupPokeResp;
+    case "TSendMusicResp":
+      return Frame_FrameType.TSendMusicResp;
     case 341:
-    case "TSetFriendPokeResp":
-      return Frame_FrameType.TSetFriendPokeResp;
+    case "TSendGroupPokeResp":
+      return Frame_FrameType.TSendGroupPokeResp;
     case 342:
+    case "TSendFriendPokeResp":
+      return Frame_FrameType.TSendFriendPokeResp;
+    case 343:
     case "TSendChannelMsgResp":
       return Frame_FrameType.TSendChannelMsgResp;
     case -1:
@@ -644,6 +668,10 @@ export function frame_FrameTypeToJSON(object: Frame_FrameType): string {
       return "TFriendRequestEvent";
     case Frame_FrameType.TGroupRequestEvent:
       return "TGroupRequestEvent";
+    case Frame_FrameType.TGroupTempMessageEvent:
+      return "TGroupTempMessageEvent";
+    case Frame_FrameType.TGroupNotifyEvent:
+      return "TGroupNotifyEvent";
     case Frame_FrameType.TChannelMessageEvent:
       return "TChannelMessageEvent";
     case Frame_FrameType.TSendPrivateMsgReq:
@@ -724,10 +752,12 @@ export function frame_FrameTypeToJSON(object: Frame_FrameType): string {
       return "TCleanCacheReq";
     case Frame_FrameType.TSetGroupSignInReq:
       return "TSetGroupSignInReq";
-    case Frame_FrameType.TSetGroupPokeReq:
-      return "TSetGroupPokeReq";
-    case Frame_FrameType.TSetFriendPokeReq:
-      return "TSetFriendPokeReq";
+    case Frame_FrameType.TSendMusicReq:
+      return "TSendMusicReq";
+    case Frame_FrameType.TSendGroupPokeReq:
+      return "TSendGroupPokeReq";
+    case Frame_FrameType.TSendFriendPokeReq:
+      return "TSendFriendPokeReq";
     case Frame_FrameType.TSendChannelMsgReq:
       return "TSendChannelMsgReq";
     case Frame_FrameType.TSendPrivateMsgResp:
@@ -808,10 +838,12 @@ export function frame_FrameTypeToJSON(object: Frame_FrameType): string {
       return "TCleanCacheResp";
     case Frame_FrameType.TSetGroupSignInResp:
       return "TSetGroupSignInResp";
-    case Frame_FrameType.TSetGroupPokeResp:
-      return "TSetGroupPokeResp";
-    case Frame_FrameType.TSetFriendPokeResp:
-      return "TSetFriendPokeResp";
+    case Frame_FrameType.TSendMusicResp:
+      return "TSendMusicResp";
+    case Frame_FrameType.TSendGroupPokeResp:
+      return "TSendGroupPokeResp";
+    case Frame_FrameType.TSendFriendPokeResp:
+      return "TSendFriendPokeResp";
     case Frame_FrameType.TSendChannelMsgResp:
       return "TSendChannelMsgResp";
     case Frame_FrameType.UNRECOGNIZED:
@@ -844,6 +876,8 @@ function createBaseFrame(): Frame {
     friendRecallNoticeEvent: undefined,
     friendRequestEvent: undefined,
     groupRequestEvent: undefined,
+    groupTempMessageEvent: undefined,
+    groupNotifyEvent: undefined,
     channelMessageEvent: undefined,
     sendPrivateMsgReq: undefined,
     sendGroupMsgReq: undefined,
@@ -884,8 +918,9 @@ function createBaseFrame(): Frame {
     setRestartReq: undefined,
     cleanCacheReq: undefined,
     setGroupSignInReq: undefined,
-    setGroupPokeReq: undefined,
-    setFriendPokeReq: undefined,
+    sendMusicReq: undefined,
+    sendGroupPokeReq: undefined,
+    sendFriendPokeReq: undefined,
     sendChannelMsgReq: undefined,
     sendPrivateMsgResp: undefined,
     sendGroupMsgResp: undefined,
@@ -926,8 +961,9 @@ function createBaseFrame(): Frame {
     setRestartResp: undefined,
     cleanCacheResp: undefined,
     setGroupSignInResp: undefined,
-    setGroupPokeResp: undefined,
-    setFriendPokeResp: undefined,
+    sendMusicResp: undefined,
+    sendGroupPokeResp: undefined,
+    sendFriendPokeResp: undefined,
     sendChannelMsgResp: undefined,
   };
 }
@@ -1024,10 +1060,22 @@ export const Frame = {
         writer.uint32(898).fork()
       ).ldelim();
     }
+    if (message.groupTempMessageEvent !== undefined) {
+      GroupTempMessageEvent.encode(
+        message.groupTempMessageEvent,
+        writer.uint32(906).fork()
+      ).ldelim();
+    }
+    if (message.groupNotifyEvent !== undefined) {
+      GroupNotifyEvent.encode(
+        message.groupNotifyEvent,
+        writer.uint32(914).fork()
+      ).ldelim();
+    }
     if (message.channelMessageEvent !== undefined) {
       ChannelMessageEvent.encode(
         message.channelMessageEvent,
-        writer.uint32(906).fork()
+        writer.uint32(922).fork()
       ).ldelim();
     }
     if (message.sendPrivateMsgReq !== undefined) {
@@ -1261,22 +1309,28 @@ export const Frame = {
         writer.uint32(1914).fork()
       ).ldelim();
     }
-    if (message.setGroupPokeReq !== undefined) {
-      SetGroupPokeReq.encode(
-        message.setGroupPokeReq,
+    if (message.sendMusicReq !== undefined) {
+      SendMusicReq.encode(
+        message.sendMusicReq,
         writer.uint32(1922).fork()
       ).ldelim();
     }
-    if (message.setFriendPokeReq !== undefined) {
-      SetFriendPokeReq.encode(
-        message.setFriendPokeReq,
+    if (message.sendGroupPokeReq !== undefined) {
+      SendGroupPokeReq.encode(
+        message.sendGroupPokeReq,
         writer.uint32(1930).fork()
+      ).ldelim();
+    }
+    if (message.sendFriendPokeReq !== undefined) {
+      SendFriendPokeReq.encode(
+        message.sendFriendPokeReq,
+        writer.uint32(1938).fork()
       ).ldelim();
     }
     if (message.sendChannelMsgReq !== undefined) {
       SendChannelMsgReq.encode(
         message.sendChannelMsgReq,
-        writer.uint32(1938).fork()
+        writer.uint32(1946).fork()
       ).ldelim();
     }
     if (message.sendPrivateMsgResp !== undefined) {
@@ -1513,22 +1567,28 @@ export const Frame = {
         writer.uint32(2714).fork()
       ).ldelim();
     }
-    if (message.setGroupPokeResp !== undefined) {
-      SetGroupPokeResp.encode(
-        message.setGroupPokeResp,
+    if (message.sendMusicResp !== undefined) {
+      SendMusicResp.encode(
+        message.sendMusicResp,
         writer.uint32(2722).fork()
       ).ldelim();
     }
-    if (message.setFriendPokeResp !== undefined) {
-      SetFriendPokeResp.encode(
-        message.setFriendPokeResp,
+    if (message.sendGroupPokeResp !== undefined) {
+      SendGroupPokeResp.encode(
+        message.sendGroupPokeResp,
         writer.uint32(2730).fork()
+      ).ldelim();
+    }
+    if (message.sendFriendPokeResp !== undefined) {
+      SendFriendPokeResp.encode(
+        message.sendFriendPokeResp,
+        writer.uint32(2738).fork()
       ).ldelim();
     }
     if (message.sendChannelMsgResp !== undefined) {
       SendChannelMsgResp.encode(
         message.sendChannelMsgResp,
-        writer.uint32(2738).fork()
+        writer.uint32(2746).fork()
       ).ldelim();
     }
     return writer;
@@ -1632,6 +1692,18 @@ export const Frame = {
           );
           break;
         case 113:
+          message.groupTempMessageEvent = GroupTempMessageEvent.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 114:
+          message.groupNotifyEvent = GroupNotifyEvent.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 115:
           message.channelMessageEvent = ChannelMessageEvent.decode(
             reader,
             reader.uint32()
@@ -1842,18 +1914,21 @@ export const Frame = {
           );
           break;
         case 240:
-          message.setGroupPokeReq = SetGroupPokeReq.decode(
-            reader,
-            reader.uint32()
-          );
+          message.sendMusicReq = SendMusicReq.decode(reader, reader.uint32());
           break;
         case 241:
-          message.setFriendPokeReq = SetFriendPokeReq.decode(
+          message.sendGroupPokeReq = SendGroupPokeReq.decode(
             reader,
             reader.uint32()
           );
           break;
         case 242:
+          message.sendFriendPokeReq = SendFriendPokeReq.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 243:
           message.sendChannelMsgReq = SendChannelMsgReq.decode(
             reader,
             reader.uint32()
@@ -2073,18 +2148,21 @@ export const Frame = {
           );
           break;
         case 340:
-          message.setGroupPokeResp = SetGroupPokeResp.decode(
-            reader,
-            reader.uint32()
-          );
+          message.sendMusicResp = SendMusicResp.decode(reader, reader.uint32());
           break;
         case 341:
-          message.setFriendPokeResp = SetFriendPokeResp.decode(
+          message.sendGroupPokeResp = SendGroupPokeResp.decode(
             reader,
             reader.uint32()
           );
           break;
         case 342:
+          message.sendFriendPokeResp = SendFriendPokeResp.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 343:
           message.sendChannelMsgResp = SendChannelMsgResp.decode(
             reader,
             reader.uint32()
@@ -2150,6 +2228,12 @@ export const Frame = {
         : undefined,
       groupRequestEvent: isSet(object.groupRequestEvent)
         ? GroupRequestEvent.fromJSON(object.groupRequestEvent)
+        : undefined,
+      groupTempMessageEvent: isSet(object.groupTempMessageEvent)
+        ? GroupTempMessageEvent.fromJSON(object.groupTempMessageEvent)
+        : undefined,
+      groupNotifyEvent: isSet(object.groupNotifyEvent)
+        ? GroupNotifyEvent.fromJSON(object.groupNotifyEvent)
         : undefined,
       channelMessageEvent: isSet(object.channelMessageEvent)
         ? ChannelMessageEvent.fromJSON(object.channelMessageEvent)
@@ -2271,11 +2355,14 @@ export const Frame = {
       setGroupSignInReq: isSet(object.setGroupSignInReq)
         ? SetGroupSignInReq.fromJSON(object.setGroupSignInReq)
         : undefined,
-      setGroupPokeReq: isSet(object.setGroupPokeReq)
-        ? SetGroupPokeReq.fromJSON(object.setGroupPokeReq)
+      sendMusicReq: isSet(object.sendMusicReq)
+        ? SendMusicReq.fromJSON(object.sendMusicReq)
         : undefined,
-      setFriendPokeReq: isSet(object.setFriendPokeReq)
-        ? SetFriendPokeReq.fromJSON(object.setFriendPokeReq)
+      sendGroupPokeReq: isSet(object.sendGroupPokeReq)
+        ? SendGroupPokeReq.fromJSON(object.sendGroupPokeReq)
+        : undefined,
+      sendFriendPokeReq: isSet(object.sendFriendPokeReq)
+        ? SendFriendPokeReq.fromJSON(object.sendFriendPokeReq)
         : undefined,
       sendChannelMsgReq: isSet(object.sendChannelMsgReq)
         ? SendChannelMsgReq.fromJSON(object.sendChannelMsgReq)
@@ -2397,11 +2484,14 @@ export const Frame = {
       setGroupSignInResp: isSet(object.setGroupSignInResp)
         ? SetGroupSignInResp.fromJSON(object.setGroupSignInResp)
         : undefined,
-      setGroupPokeResp: isSet(object.setGroupPokeResp)
-        ? SetGroupPokeResp.fromJSON(object.setGroupPokeResp)
+      sendMusicResp: isSet(object.sendMusicResp)
+        ? SendMusicResp.fromJSON(object.sendMusicResp)
         : undefined,
-      setFriendPokeResp: isSet(object.setFriendPokeResp)
-        ? SetFriendPokeResp.fromJSON(object.setFriendPokeResp)
+      sendGroupPokeResp: isSet(object.sendGroupPokeResp)
+        ? SendGroupPokeResp.fromJSON(object.sendGroupPokeResp)
+        : undefined,
+      sendFriendPokeResp: isSet(object.sendFriendPokeResp)
+        ? SendFriendPokeResp.fromJSON(object.sendFriendPokeResp)
         : undefined,
       sendChannelMsgResp: isSet(object.sendChannelMsgResp)
         ? SendChannelMsgResp.fromJSON(object.sendChannelMsgResp)
@@ -2469,6 +2559,14 @@ export const Frame = {
     message.groupRequestEvent !== undefined &&
       (obj.groupRequestEvent = message.groupRequestEvent
         ? GroupRequestEvent.toJSON(message.groupRequestEvent)
+        : undefined);
+    message.groupTempMessageEvent !== undefined &&
+      (obj.groupTempMessageEvent = message.groupTempMessageEvent
+        ? GroupTempMessageEvent.toJSON(message.groupTempMessageEvent)
+        : undefined);
+    message.groupNotifyEvent !== undefined &&
+      (obj.groupNotifyEvent = message.groupNotifyEvent
+        ? GroupNotifyEvent.toJSON(message.groupNotifyEvent)
         : undefined);
     message.channelMessageEvent !== undefined &&
       (obj.channelMessageEvent = message.channelMessageEvent
@@ -2630,13 +2728,17 @@ export const Frame = {
       (obj.setGroupSignInReq = message.setGroupSignInReq
         ? SetGroupSignInReq.toJSON(message.setGroupSignInReq)
         : undefined);
-    message.setGroupPokeReq !== undefined &&
-      (obj.setGroupPokeReq = message.setGroupPokeReq
-        ? SetGroupPokeReq.toJSON(message.setGroupPokeReq)
+    message.sendMusicReq !== undefined &&
+      (obj.sendMusicReq = message.sendMusicReq
+        ? SendMusicReq.toJSON(message.sendMusicReq)
         : undefined);
-    message.setFriendPokeReq !== undefined &&
-      (obj.setFriendPokeReq = message.setFriendPokeReq
-        ? SetFriendPokeReq.toJSON(message.setFriendPokeReq)
+    message.sendGroupPokeReq !== undefined &&
+      (obj.sendGroupPokeReq = message.sendGroupPokeReq
+        ? SendGroupPokeReq.toJSON(message.sendGroupPokeReq)
+        : undefined);
+    message.sendFriendPokeReq !== undefined &&
+      (obj.sendFriendPokeReq = message.sendFriendPokeReq
+        ? SendFriendPokeReq.toJSON(message.sendFriendPokeReq)
         : undefined);
     message.sendChannelMsgReq !== undefined &&
       (obj.sendChannelMsgReq = message.sendChannelMsgReq
@@ -2798,13 +2900,17 @@ export const Frame = {
       (obj.setGroupSignInResp = message.setGroupSignInResp
         ? SetGroupSignInResp.toJSON(message.setGroupSignInResp)
         : undefined);
-    message.setGroupPokeResp !== undefined &&
-      (obj.setGroupPokeResp = message.setGroupPokeResp
-        ? SetGroupPokeResp.toJSON(message.setGroupPokeResp)
+    message.sendMusicResp !== undefined &&
+      (obj.sendMusicResp = message.sendMusicResp
+        ? SendMusicResp.toJSON(message.sendMusicResp)
         : undefined);
-    message.setFriendPokeResp !== undefined &&
-      (obj.setFriendPokeResp = message.setFriendPokeResp
-        ? SetFriendPokeResp.toJSON(message.setFriendPokeResp)
+    message.sendGroupPokeResp !== undefined &&
+      (obj.sendGroupPokeResp = message.sendGroupPokeResp
+        ? SendGroupPokeResp.toJSON(message.sendGroupPokeResp)
+        : undefined);
+    message.sendFriendPokeResp !== undefined &&
+      (obj.sendFriendPokeResp = message.sendFriendPokeResp
+        ? SendFriendPokeResp.toJSON(message.sendFriendPokeResp)
         : undefined);
     message.sendChannelMsgResp !== undefined &&
       (obj.sendChannelMsgResp = message.sendChannelMsgResp
@@ -2886,6 +2992,15 @@ export const Frame = {
       object.groupRequestEvent !== undefined &&
       object.groupRequestEvent !== null
         ? GroupRequestEvent.fromPartial(object.groupRequestEvent)
+        : undefined;
+    message.groupTempMessageEvent =
+      object.groupTempMessageEvent !== undefined &&
+      object.groupTempMessageEvent !== null
+        ? GroupTempMessageEvent.fromPartial(object.groupTempMessageEvent)
+        : undefined;
+    message.groupNotifyEvent =
+      object.groupNotifyEvent !== undefined && object.groupNotifyEvent !== null
+        ? GroupNotifyEvent.fromPartial(object.groupNotifyEvent)
         : undefined;
     message.channelMessageEvent =
       object.channelMessageEvent !== undefined &&
@@ -3062,13 +3177,18 @@ export const Frame = {
       object.setGroupSignInReq !== null
         ? SetGroupSignInReq.fromPartial(object.setGroupSignInReq)
         : undefined;
-    message.setGroupPokeReq =
-      object.setGroupPokeReq !== undefined && object.setGroupPokeReq !== null
-        ? SetGroupPokeReq.fromPartial(object.setGroupPokeReq)
+    message.sendMusicReq =
+      object.sendMusicReq !== undefined && object.sendMusicReq !== null
+        ? SendMusicReq.fromPartial(object.sendMusicReq)
         : undefined;
-    message.setFriendPokeReq =
-      object.setFriendPokeReq !== undefined && object.setFriendPokeReq !== null
-        ? SetFriendPokeReq.fromPartial(object.setFriendPokeReq)
+    message.sendGroupPokeReq =
+      object.sendGroupPokeReq !== undefined && object.sendGroupPokeReq !== null
+        ? SendGroupPokeReq.fromPartial(object.sendGroupPokeReq)
+        : undefined;
+    message.sendFriendPokeReq =
+      object.sendFriendPokeReq !== undefined &&
+      object.sendFriendPokeReq !== null
+        ? SendFriendPokeReq.fromPartial(object.sendFriendPokeReq)
         : undefined;
     message.sendChannelMsgReq =
       object.sendChannelMsgReq !== undefined &&
@@ -3250,14 +3370,19 @@ export const Frame = {
       object.setGroupSignInResp !== null
         ? SetGroupSignInResp.fromPartial(object.setGroupSignInResp)
         : undefined;
-    message.setGroupPokeResp =
-      object.setGroupPokeResp !== undefined && object.setGroupPokeResp !== null
-        ? SetGroupPokeResp.fromPartial(object.setGroupPokeResp)
+    message.sendMusicResp =
+      object.sendMusicResp !== undefined && object.sendMusicResp !== null
+        ? SendMusicResp.fromPartial(object.sendMusicResp)
         : undefined;
-    message.setFriendPokeResp =
-      object.setFriendPokeResp !== undefined &&
-      object.setFriendPokeResp !== null
-        ? SetFriendPokeResp.fromPartial(object.setFriendPokeResp)
+    message.sendGroupPokeResp =
+      object.sendGroupPokeResp !== undefined &&
+      object.sendGroupPokeResp !== null
+        ? SendGroupPokeResp.fromPartial(object.sendGroupPokeResp)
+        : undefined;
+    message.sendFriendPokeResp =
+      object.sendFriendPokeResp !== undefined &&
+      object.sendFriendPokeResp !== null
+        ? SendFriendPokeResp.fromPartial(object.sendFriendPokeResp)
         : undefined;
     message.sendChannelMsgResp =
       object.sendChannelMsgResp !== undefined &&
@@ -3364,10 +3489,9 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
-        Exclude<keyof I, KeysOfUnion<P>>,
-        never
-      >;
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 function longToNumber(long: Long): number {
   if (long.gt(Number.MAX_SAFE_INTEGER)) {

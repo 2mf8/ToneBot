@@ -2,6 +2,7 @@
 import Long from "long";
 import { Message, MessageReceipt } from "./onebot_base";
 import _m0 from "protobufjs/minimal";
+import { toLong } from "../util/convertLong";
 
 export const protobufPackage = "onebot";
 
@@ -11,13 +12,13 @@ export interface PrivateMessageEvent {
   postType: string;
   messageType: string;
   subType: string;
-  /** int32 message_id = 6; // 废弃 */
+  messageId: number;
   userId: number;
   message: Message[];
   rawMessage: string;
   font: number;
   sender: PrivateMessageEvent_Sender | undefined;
-  messageId: MessageReceipt | undefined;
+  messageReceipt: MessageReceipt | undefined;
   extra: { [key: string]: string };
 }
 
@@ -39,7 +40,7 @@ export interface GroupMessageEvent {
   postType: string;
   messageType: string;
   subType: string;
-  /** int32 message_id = 6; // 废弃 */
+  messageId: number;
   groupId: number;
   userId: number;
   anonymous: GroupMessageEvent_Anonymous | undefined;
@@ -47,7 +48,7 @@ export interface GroupMessageEvent {
   rawMessage: string;
   font: number;
   sender: GroupMessageEvent_Sender | undefined;
-  messageId: MessageReceipt | undefined;
+  messageReceipt: MessageReceipt | undefined;
   extra: { [key: string]: string };
 }
 
@@ -78,7 +79,7 @@ export interface ChannelMessageEvent {
   id: number;
   internalId: number;
   guildId: number | string;
-  channelId: number;
+  channelId: number |string;
   time: number;
   selfId: number | string;
   postType: string;
@@ -100,6 +101,25 @@ export interface ChannelMessageEvent_Sender {
 }
 
 export interface ChannelMessageEvent_ExtraEntry {
+  key: string;
+  value: string;
+}
+
+export interface GroupTempMessageEvent {
+  time: number;
+  selfId: number;
+  postType: string;
+  messageType: string;
+  groupId: number;
+  userId: number;
+  message: Message[];
+  rawMessage: string;
+  messageReceipt: MessageReceipt | undefined;
+  messageId: number;
+  extra: { [key: string]: string };
+}
+
+export interface GroupTempMessageEvent_ExtraEntry {
   key: string;
   value: string;
 }
@@ -126,6 +146,20 @@ export interface GroupUploadNoticeEvent_File {
 export interface GroupUploadNoticeEvent_ExtraEntry {
   key: string;
   value: string;
+}
+
+export interface GroupNotifyEvent {
+  time: number;
+  selfId: number;
+  postType: string;
+  noticeType: string;
+  groupId: number;
+  groupName: string;
+  sender: number;
+  senderCard: string;
+  targetId: number;
+  targetCard: string;
+  honor: string;
 }
 
 export interface GroupAdminNoticeEvent {
@@ -218,8 +252,8 @@ export interface GroupRecallNoticeEvent {
   groupId: number;
   userId: number;
   operatorId: number;
-  /** int32 message_id = 8; // 废弃 */
-  messageId: MessageReceipt | undefined;
+  messageId: number;
+  messageReceipt: MessageReceipt | undefined;
   extra: { [key: string]: string };
 }
 
@@ -234,8 +268,8 @@ export interface FriendRecallNoticeEvent {
   postType: string;
   noticeType: string;
   userId: number;
-  /** int32 message_id = 6; // 废弃 */
-  messageId: MessageReceipt | undefined;
+  messageId: number;
+  messageReceipt: MessageReceipt | undefined;
   extra: { [key: string]: string };
 }
 
@@ -285,12 +319,13 @@ function createBasePrivateMessageEvent(): PrivateMessageEvent {
     postType: "",
     messageType: "",
     subType: "",
+    messageId: 0,
     userId: 0,
     message: [],
     rawMessage: "",
     font: 0,
     sender: undefined,
-    messageId: undefined,
+    messageReceipt: undefined,
     extra: {},
   };
 }
@@ -315,6 +350,9 @@ export const PrivateMessageEvent = {
     if (message.subType !== "") {
       writer.uint32(42).string(message.subType);
     }
+    if (message.messageId !== 0) {
+      writer.uint32(48).int32(message.messageId);
+    }
     if (message.userId !== 0) {
       writer.uint32(56).int64(message.userId);
     }
@@ -333,9 +371,9 @@ export const PrivateMessageEvent = {
         writer.uint32(90).fork()
       ).ldelim();
     }
-    if (message.messageId !== undefined) {
+    if (message.messageReceipt !== undefined) {
       MessageReceipt.encode(
-        message.messageId,
+        message.messageReceipt,
         writer.uint32(98).fork()
       ).ldelim();
     }
@@ -370,6 +408,9 @@ export const PrivateMessageEvent = {
         case 5:
           message.subType = reader.string();
           break;
+        case 6:
+          message.messageId = reader.int32();
+          break;
         case 7:
           message.userId = longToNumber(reader.int64() as Long);
           break;
@@ -389,7 +430,10 @@ export const PrivateMessageEvent = {
           );
           break;
         case 12:
-          message.messageId = MessageReceipt.decode(reader, reader.uint32());
+          message.messageReceipt = MessageReceipt.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 255:
           const entry255 = PrivateMessageEvent_ExtraEntry.decode(
@@ -415,6 +459,7 @@ export const PrivateMessageEvent = {
       postType: isSet(object.postType) ? String(object.postType) : "",
       messageType: isSet(object.messageType) ? String(object.messageType) : "",
       subType: isSet(object.subType) ? String(object.subType) : "",
+      messageId: isSet(object.messageId) ? Number(object.messageId) : 0,
       userId: isSet(object.userId) ? Number(object.userId) : 0,
       message: Array.isArray(object?.message)
         ? object.message.map((e: any) => Message.fromJSON(e))
@@ -424,8 +469,8 @@ export const PrivateMessageEvent = {
       sender: isSet(object.sender)
         ? PrivateMessageEvent_Sender.fromJSON(object.sender)
         : undefined,
-      messageId: isSet(object.messageId)
-        ? MessageReceipt.fromJSON(object.messageId)
+      messageReceipt: isSet(object.messageReceipt)
+        ? MessageReceipt.fromJSON(object.messageReceipt)
         : undefined,
       extra: isObject(object.extra)
         ? Object.entries(object.extra).reduce<{ [key: string]: string }>(
@@ -447,6 +492,8 @@ export const PrivateMessageEvent = {
     message.messageType !== undefined &&
       (obj.messageType = message.messageType);
     message.subType !== undefined && (obj.subType = message.subType);
+    message.messageId !== undefined &&
+      (obj.messageId = Math.round(message.messageId));
     message.userId !== undefined && (obj.userId = Math.round(message.userId));
     if (message.message) {
       obj.message = message.message.map((e) =>
@@ -461,9 +508,9 @@ export const PrivateMessageEvent = {
       (obj.sender = message.sender
         ? PrivateMessageEvent_Sender.toJSON(message.sender)
         : undefined);
-    message.messageId !== undefined &&
-      (obj.messageId = message.messageId
-        ? MessageReceipt.toJSON(message.messageId)
+    message.messageReceipt !== undefined &&
+      (obj.messageReceipt = message.messageReceipt
+        ? MessageReceipt.toJSON(message.messageReceipt)
         : undefined);
     obj.extra = {};
     if (message.extra) {
@@ -483,6 +530,7 @@ export const PrivateMessageEvent = {
     message.postType = object.postType ?? "";
     message.messageType = object.messageType ?? "";
     message.subType = object.subType ?? "";
+    message.messageId = object.messageId ?? 0;
     message.userId = object.userId ?? 0;
     message.message = object.message?.map((e) => Message.fromPartial(e)) || [];
     message.rawMessage = object.rawMessage ?? "";
@@ -491,9 +539,9 @@ export const PrivateMessageEvent = {
       object.sender !== undefined && object.sender !== null
         ? PrivateMessageEvent_Sender.fromPartial(object.sender)
         : undefined;
-    message.messageId =
-      object.messageId !== undefined && object.messageId !== null
-        ? MessageReceipt.fromPartial(object.messageId)
+    message.messageReceipt =
+      object.messageReceipt !== undefined && object.messageReceipt !== null
+        ? MessageReceipt.fromPartial(object.messageReceipt)
         : undefined;
     message.extra = Object.entries(object.extra ?? {}).reduce<{
       [key: string]: string;
@@ -664,6 +712,7 @@ function createBaseGroupMessageEvent(): GroupMessageEvent {
     postType: "",
     messageType: "",
     subType: "",
+    messageId: 0,
     groupId: 0,
     userId: 0,
     anonymous: undefined,
@@ -671,7 +720,7 @@ function createBaseGroupMessageEvent(): GroupMessageEvent {
     rawMessage: "",
     font: 0,
     sender: undefined,
-    messageId: undefined,
+    messageReceipt: undefined,
     extra: {},
   };
 }
@@ -695,6 +744,9 @@ export const GroupMessageEvent = {
     }
     if (message.subType !== "") {
       writer.uint32(42).string(message.subType);
+    }
+    if (message.messageId !== 0) {
+      writer.uint32(48).int32(message.messageId);
     }
     if (message.groupId !== 0) {
       writer.uint32(56).int64(message.groupId);
@@ -723,9 +775,9 @@ export const GroupMessageEvent = {
         writer.uint32(106).fork()
       ).ldelim();
     }
-    if (message.messageId !== undefined) {
+    if (message.messageReceipt !== undefined) {
       MessageReceipt.encode(
-        message.messageId,
+        message.messageReceipt,
         writer.uint32(114).fork()
       ).ldelim();
     }
@@ -760,6 +812,9 @@ export const GroupMessageEvent = {
         case 5:
           message.subType = reader.string();
           break;
+        case 6:
+          message.messageId = reader.int32();
+          break;
         case 7:
           message.groupId = longToNumber(reader.int64() as Long);
           break;
@@ -788,7 +843,10 @@ export const GroupMessageEvent = {
           );
           break;
         case 14:
-          message.messageId = MessageReceipt.decode(reader, reader.uint32());
+          message.messageReceipt = MessageReceipt.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 255:
           const entry255 = GroupMessageEvent_ExtraEntry.decode(
@@ -814,6 +872,7 @@ export const GroupMessageEvent = {
       postType: isSet(object.postType) ? String(object.postType) : "",
       messageType: isSet(object.messageType) ? String(object.messageType) : "",
       subType: isSet(object.subType) ? String(object.subType) : "",
+      messageId: isSet(object.messageId) ? Number(object.messageId) : 0,
       groupId: isSet(object.groupId) ? Number(object.groupId) : 0,
       userId: isSet(object.userId) ? Number(object.userId) : 0,
       anonymous: isSet(object.anonymous)
@@ -827,8 +886,8 @@ export const GroupMessageEvent = {
       sender: isSet(object.sender)
         ? GroupMessageEvent_Sender.fromJSON(object.sender)
         : undefined,
-      messageId: isSet(object.messageId)
-        ? MessageReceipt.fromJSON(object.messageId)
+      messageReceipt: isSet(object.messageReceipt)
+        ? MessageReceipt.fromJSON(object.messageReceipt)
         : undefined,
       extra: isObject(object.extra)
         ? Object.entries(object.extra).reduce<{ [key: string]: string }>(
@@ -850,6 +909,8 @@ export const GroupMessageEvent = {
     message.messageType !== undefined &&
       (obj.messageType = message.messageType);
     message.subType !== undefined && (obj.subType = message.subType);
+    message.messageId !== undefined &&
+      (obj.messageId = Math.round(message.messageId));
     message.groupId !== undefined &&
       (obj.groupId = Math.round(message.groupId));
     message.userId !== undefined && (obj.userId = Math.round(message.userId));
@@ -870,9 +931,9 @@ export const GroupMessageEvent = {
       (obj.sender = message.sender
         ? GroupMessageEvent_Sender.toJSON(message.sender)
         : undefined);
-    message.messageId !== undefined &&
-      (obj.messageId = message.messageId
-        ? MessageReceipt.toJSON(message.messageId)
+    message.messageReceipt !== undefined &&
+      (obj.messageReceipt = message.messageReceipt
+        ? MessageReceipt.toJSON(message.messageReceipt)
         : undefined);
     obj.extra = {};
     if (message.extra) {
@@ -892,6 +953,7 @@ export const GroupMessageEvent = {
     message.postType = object.postType ?? "";
     message.messageType = object.messageType ?? "";
     message.subType = object.subType ?? "";
+    message.messageId = object.messageId ?? 0;
     message.groupId = object.groupId ?? 0;
     message.userId = object.userId ?? 0;
     message.anonymous =
@@ -905,9 +967,9 @@ export const GroupMessageEvent = {
       object.sender !== undefined && object.sender !== null
         ? GroupMessageEvent_Sender.fromPartial(object.sender)
         : undefined;
-    message.messageId =
-      object.messageId !== undefined && object.messageId !== null
-        ? MessageReceipt.fromPartial(object.messageId)
+    message.messageReceipt =
+      object.messageReceipt !== undefined && object.messageReceipt !== null
+        ? MessageReceipt.fromPartial(object.messageReceipt)
         : undefined;
     message.extra = Object.entries(object.extra ?? {}).reduce<{
       [key: string]: string;
@@ -1303,7 +1365,7 @@ export const ChannelMessageEvent = {
           message.time = longToNumber(reader.int64() as Long);
           break;
         case 6:
-          message.selfId = reader.uint64().toString();
+          message.selfId = reader.int64().toString();
           break;
         case 7:
           message.postType = reader.string();
@@ -1389,7 +1451,7 @@ export const ChannelMessageEvent = {
     message.guildId !== undefined &&
       (obj.guildId = Math.round(Number(message.guildId)));
     message.channelId !== undefined &&
-      (obj.channelId = Math.round(message.channelId));
+      (obj.channelId = Math.round(Number(message.channelId)));
     message.time !== undefined && (obj.time = Math.round(message.time));
     message.selfId !== undefined && (obj.selfId = Math.round(Number(message.selfId)));
     message.postType !== undefined && (obj.postType = message.postType);
@@ -1618,6 +1680,285 @@ export const ChannelMessageEvent_ExtraEntry = {
     object: I
   ): ChannelMessageEvent_ExtraEntry {
     const message = createBaseChannelMessageEvent_ExtraEntry();
+    message.key = object.key ?? "";
+    message.value = object.value ?? "";
+    return message;
+  },
+};
+
+function createBaseGroupTempMessageEvent(): GroupTempMessageEvent {
+  return {
+    time: 0,
+    selfId: 0,
+    postType: "",
+    messageType: "",
+    groupId: 0,
+    userId: 0,
+    message: [],
+    rawMessage: "",
+    messageReceipt: undefined,
+    messageId: 0,
+    extra: {},
+  };
+}
+
+export const GroupTempMessageEvent = {
+  encode(
+    message: GroupTempMessageEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.time !== 0) {
+      writer.uint32(8).int64(message.time);
+    }
+    if (message.selfId !== 0) {
+      writer.uint32(16).int64(message.selfId);
+    }
+    if (message.postType !== "") {
+      writer.uint32(26).string(message.postType);
+    }
+    if (message.messageType !== "") {
+      writer.uint32(34).string(message.messageType);
+    }
+    if (message.groupId !== 0) {
+      writer.uint32(56).int64(message.groupId);
+    }
+    if (message.userId !== 0) {
+      writer.uint32(64).int64(message.userId);
+    }
+    for (const v of message.message) {
+      Message.encode(v!, writer.uint32(82).fork()).ldelim();
+    }
+    if (message.rawMessage !== "") {
+      writer.uint32(90).string(message.rawMessage);
+    }
+    if (message.messageReceipt !== undefined) {
+      MessageReceipt.encode(
+        message.messageReceipt,
+        writer.uint32(114).fork()
+      ).ldelim();
+    }
+    if (message.messageId !== 0) {
+      writer.uint32(120).int32(message.messageId);
+    }
+    Object.entries(message.extra).forEach(([key, value]) => {
+      GroupTempMessageEvent_ExtraEntry.encode(
+        { key: key as any, value },
+        writer.uint32(2042).fork()
+      ).ldelim();
+    });
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GroupTempMessageEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGroupTempMessageEvent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.time = longToNumber(reader.int64() as Long);
+          break;
+        case 2:
+          message.selfId = longToNumber(reader.int64() as Long);
+          break;
+        case 3:
+          message.postType = reader.string();
+          break;
+        case 4:
+          message.messageType = reader.string();
+          break;
+        case 7:
+          message.groupId = longToNumber(reader.int64() as Long);
+          break;
+        case 8:
+          message.userId = longToNumber(reader.int64() as Long);
+          break;
+        case 10:
+          message.message.push(Message.decode(reader, reader.uint32()));
+          break;
+        case 11:
+          message.rawMessage = reader.string();
+          break;
+        case 14:
+          message.messageReceipt = MessageReceipt.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 15:
+          message.messageId = reader.int32();
+          break;
+        case 255:
+          const entry255 = GroupTempMessageEvent_ExtraEntry.decode(
+            reader,
+            reader.uint32()
+          );
+          if (entry255.value !== undefined) {
+            message.extra[entry255.key] = entry255.value;
+          }
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GroupTempMessageEvent {
+    return {
+      time: isSet(object.time) ? Number(object.time) : 0,
+      selfId: isSet(object.selfId) ? Number(object.selfId) : 0,
+      postType: isSet(object.postType) ? String(object.postType) : "",
+      messageType: isSet(object.messageType) ? String(object.messageType) : "",
+      groupId: isSet(object.groupId) ? Number(object.groupId) : 0,
+      userId: isSet(object.userId) ? Number(object.userId) : 0,
+      message: Array.isArray(object?.message)
+        ? object.message.map((e: any) => Message.fromJSON(e))
+        : [],
+      rawMessage: isSet(object.rawMessage) ? String(object.rawMessage) : "",
+      messageReceipt: isSet(object.messageReceipt)
+        ? MessageReceipt.fromJSON(object.messageReceipt)
+        : undefined,
+      messageId: isSet(object.messageId) ? Number(object.messageId) : 0,
+      extra: isObject(object.extra)
+        ? Object.entries(object.extra).reduce<{ [key: string]: string }>(
+            (acc, [key, value]) => {
+              acc[key] = String(value);
+              return acc;
+            },
+            {}
+          )
+        : {},
+    };
+  },
+
+  toJSON(message: GroupTempMessageEvent): unknown {
+    const obj: any = {};
+    message.time !== undefined && (obj.time = Math.round(message.time));
+    message.selfId !== undefined && (obj.selfId = Math.round(message.selfId));
+    message.postType !== undefined && (obj.postType = message.postType);
+    message.messageType !== undefined &&
+      (obj.messageType = message.messageType);
+    message.groupId !== undefined &&
+      (obj.groupId = Math.round(message.groupId));
+    message.userId !== undefined && (obj.userId = Math.round(message.userId));
+    if (message.message) {
+      obj.message = message.message.map((e) =>
+        e ? Message.toJSON(e) : undefined
+      );
+    } else {
+      obj.message = [];
+    }
+    message.rawMessage !== undefined && (obj.rawMessage = message.rawMessage);
+    message.messageReceipt !== undefined &&
+      (obj.messageReceipt = message.messageReceipt
+        ? MessageReceipt.toJSON(message.messageReceipt)
+        : undefined);
+    message.messageId !== undefined &&
+      (obj.messageId = Math.round(message.messageId));
+    obj.extra = {};
+    if (message.extra) {
+      Object.entries(message.extra).forEach(([k, v]) => {
+        obj.extra[k] = v;
+      });
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<GroupTempMessageEvent>, I>>(
+    object: I
+  ): GroupTempMessageEvent {
+    const message = createBaseGroupTempMessageEvent();
+    message.time = object.time ?? 0;
+    message.selfId = object.selfId ?? 0;
+    message.postType = object.postType ?? "";
+    message.messageType = object.messageType ?? "";
+    message.groupId = object.groupId ?? 0;
+    message.userId = object.userId ?? 0;
+    message.message = object.message?.map((e) => Message.fromPartial(e)) || [];
+    message.rawMessage = object.rawMessage ?? "";
+    message.messageReceipt =
+      object.messageReceipt !== undefined && object.messageReceipt !== null
+        ? MessageReceipt.fromPartial(object.messageReceipt)
+        : undefined;
+    message.messageId = object.messageId ?? 0;
+    message.extra = Object.entries(object.extra ?? {}).reduce<{
+      [key: string]: string;
+    }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = String(value);
+      }
+      return acc;
+    }, {});
+    return message;
+  },
+};
+
+function createBaseGroupTempMessageEvent_ExtraEntry(): GroupTempMessageEvent_ExtraEntry {
+  return { key: "", value: "" };
+}
+
+export const GroupTempMessageEvent_ExtraEntry = {
+  encode(
+    message: GroupTempMessageEvent_ExtraEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GroupTempMessageEvent_ExtraEntry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGroupTempMessageEvent_ExtraEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.key = reader.string();
+          break;
+        case 2:
+          message.value = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GroupTempMessageEvent_ExtraEntry {
+    return {
+      key: isSet(object.key) ? String(object.key) : "",
+      value: isSet(object.value) ? String(object.value) : "",
+    };
+  },
+
+  toJSON(message: GroupTempMessageEvent_ExtraEntry): unknown {
+    const obj: any = {};
+    message.key !== undefined && (obj.key = message.key);
+    message.value !== undefined && (obj.value = message.value);
+    return obj;
+  },
+
+  fromPartial<
+    I extends Exact<DeepPartial<GroupTempMessageEvent_ExtraEntry>, I>
+  >(object: I): GroupTempMessageEvent_ExtraEntry {
+    const message = createBaseGroupTempMessageEvent_ExtraEntry();
     message.key = object.key ?? "";
     message.value = object.value ?? "";
     return message;
@@ -1952,6 +2293,164 @@ export const GroupUploadNoticeEvent_ExtraEntry = {
     const message = createBaseGroupUploadNoticeEvent_ExtraEntry();
     message.key = object.key ?? "";
     message.value = object.value ?? "";
+    return message;
+  },
+};
+
+function createBaseGroupNotifyEvent(): GroupNotifyEvent {
+  return {
+    time: 0,
+    selfId: 0,
+    postType: "",
+    noticeType: "",
+    groupId: 0,
+    groupName: "",
+    sender: 0,
+    senderCard: "",
+    targetId: 0,
+    targetCard: "",
+    honor: "",
+  };
+}
+
+export const GroupNotifyEvent = {
+  encode(
+    message: GroupNotifyEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.time !== 0) {
+      writer.uint32(8).int64(message.time);
+    }
+    if (message.selfId !== 0) {
+      writer.uint32(16).int64(message.selfId);
+    }
+    if (message.postType !== "") {
+      writer.uint32(26).string(message.postType);
+    }
+    if (message.noticeType !== "") {
+      writer.uint32(34).string(message.noticeType);
+    }
+    if (message.groupId !== 0) {
+      writer.uint32(40).int64(message.groupId);
+    }
+    if (message.groupName !== "") {
+      writer.uint32(50).string(message.groupName);
+    }
+    if (message.sender !== 0) {
+      writer.uint32(56).int64(message.sender);
+    }
+    if (message.senderCard !== "") {
+      writer.uint32(66).string(message.senderCard);
+    }
+    if (message.targetId !== 0) {
+      writer.uint32(72).int64(message.targetId);
+    }
+    if (message.targetCard !== "") {
+      writer.uint32(82).string(message.targetCard);
+    }
+    if (message.honor !== "") {
+      writer.uint32(90).string(message.honor);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GroupNotifyEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGroupNotifyEvent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.time = longToNumber(reader.int64() as Long);
+          break;
+        case 2:
+          message.selfId = longToNumber(reader.int64() as Long);
+          break;
+        case 3:
+          message.postType = reader.string();
+          break;
+        case 4:
+          message.noticeType = reader.string();
+          break;
+        case 5:
+          message.groupId = longToNumber(reader.int64() as Long);
+          break;
+        case 6:
+          message.groupName = reader.string();
+          break;
+        case 7:
+          message.sender = longToNumber(reader.int64() as Long);
+          break;
+        case 8:
+          message.senderCard = reader.string();
+          break;
+        case 9:
+          message.targetId = longToNumber(reader.int64() as Long);
+          break;
+        case 10:
+          message.targetCard = reader.string();
+          break;
+        case 11:
+          message.honor = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GroupNotifyEvent {
+    return {
+      time: isSet(object.time) ? Number(object.time) : 0,
+      selfId: isSet(object.selfId) ? Number(object.selfId) : 0,
+      postType: isSet(object.postType) ? String(object.postType) : "",
+      noticeType: isSet(object.noticeType) ? String(object.noticeType) : "",
+      groupId: isSet(object.groupId) ? Number(object.groupId) : 0,
+      groupName: isSet(object.groupName) ? String(object.groupName) : "",
+      sender: isSet(object.sender) ? Number(object.sender) : 0,
+      senderCard: isSet(object.senderCard) ? String(object.senderCard) : "",
+      targetId: isSet(object.targetId) ? Number(object.targetId) : 0,
+      targetCard: isSet(object.targetCard) ? String(object.targetCard) : "",
+      honor: isSet(object.honor) ? String(object.honor) : "",
+    };
+  },
+
+  toJSON(message: GroupNotifyEvent): unknown {
+    const obj: any = {};
+    message.time !== undefined && (obj.time = Math.round(message.time));
+    message.selfId !== undefined && (obj.selfId = Math.round(message.selfId));
+    message.postType !== undefined && (obj.postType = message.postType);
+    message.noticeType !== undefined && (obj.noticeType = message.noticeType);
+    message.groupId !== undefined &&
+      (obj.groupId = Math.round(message.groupId));
+    message.groupName !== undefined && (obj.groupName = message.groupName);
+    message.sender !== undefined && (obj.sender = Math.round(message.sender));
+    message.senderCard !== undefined && (obj.senderCard = message.senderCard);
+    message.targetId !== undefined &&
+      (obj.targetId = Math.round(message.targetId));
+    message.targetCard !== undefined && (obj.targetCard = message.targetCard);
+    message.honor !== undefined && (obj.honor = message.honor);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<GroupNotifyEvent>, I>>(
+    object: I
+  ): GroupNotifyEvent {
+    const message = createBaseGroupNotifyEvent();
+    message.time = object.time ?? 0;
+    message.selfId = object.selfId ?? 0;
+    message.postType = object.postType ?? "";
+    message.noticeType = object.noticeType ?? "";
+    message.groupId = object.groupId ?? 0;
+    message.groupName = object.groupName ?? "";
+    message.sender = object.sender ?? 0;
+    message.senderCard = object.senderCard ?? "";
+    message.targetId = object.targetId ?? 0;
+    message.targetCard = object.targetCard ?? "";
+    message.honor = object.honor ?? "";
     return message;
   },
 };
@@ -3110,7 +3609,8 @@ function createBaseGroupRecallNoticeEvent(): GroupRecallNoticeEvent {
     groupId: 0,
     userId: 0,
     operatorId: 0,
-    messageId: undefined,
+    messageId: 0,
+    messageReceipt: undefined,
     extra: {},
   };
 }
@@ -3141,9 +3641,12 @@ export const GroupRecallNoticeEvent = {
     if (message.operatorId !== 0) {
       writer.uint32(56).int64(message.operatorId);
     }
-    if (message.messageId !== undefined) {
+    if (message.messageId !== 0) {
+      writer.uint32(64).int32(message.messageId);
+    }
+    if (message.messageReceipt !== undefined) {
       MessageReceipt.encode(
-        message.messageId,
+        message.messageReceipt,
         writer.uint32(74).fork()
       ).ldelim();
     }
@@ -3187,8 +3690,14 @@ export const GroupRecallNoticeEvent = {
         case 7:
           message.operatorId = longToNumber(reader.int64() as Long);
           break;
+        case 8:
+          message.messageId = reader.int32();
+          break;
         case 9:
-          message.messageId = MessageReceipt.decode(reader, reader.uint32());
+          message.messageReceipt = MessageReceipt.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 255:
           const entry255 = GroupRecallNoticeEvent_ExtraEntry.decode(
@@ -3216,8 +3725,9 @@ export const GroupRecallNoticeEvent = {
       groupId: isSet(object.groupId) ? Number(object.groupId) : 0,
       userId: isSet(object.userId) ? Number(object.userId) : 0,
       operatorId: isSet(object.operatorId) ? Number(object.operatorId) : 0,
-      messageId: isSet(object.messageId)
-        ? MessageReceipt.fromJSON(object.messageId)
+      messageId: isSet(object.messageId) ? Number(object.messageId) : 0,
+      messageReceipt: isSet(object.messageReceipt)
+        ? MessageReceipt.fromJSON(object.messageReceipt)
         : undefined,
       extra: isObject(object.extra)
         ? Object.entries(object.extra).reduce<{ [key: string]: string }>(
@@ -3243,8 +3753,10 @@ export const GroupRecallNoticeEvent = {
     message.operatorId !== undefined &&
       (obj.operatorId = Math.round(message.operatorId));
     message.messageId !== undefined &&
-      (obj.messageId = message.messageId
-        ? MessageReceipt.toJSON(message.messageId)
+      (obj.messageId = Math.round(message.messageId));
+    message.messageReceipt !== undefined &&
+      (obj.messageReceipt = message.messageReceipt
+        ? MessageReceipt.toJSON(message.messageReceipt)
         : undefined);
     obj.extra = {};
     if (message.extra) {
@@ -3266,9 +3778,10 @@ export const GroupRecallNoticeEvent = {
     message.groupId = object.groupId ?? 0;
     message.userId = object.userId ?? 0;
     message.operatorId = object.operatorId ?? 0;
-    message.messageId =
-      object.messageId !== undefined && object.messageId !== null
-        ? MessageReceipt.fromPartial(object.messageId)
+    message.messageId = object.messageId ?? 0;
+    message.messageReceipt =
+      object.messageReceipt !== undefined && object.messageReceipt !== null
+        ? MessageReceipt.fromPartial(object.messageReceipt)
         : undefined;
     message.extra = Object.entries(object.extra ?? {}).reduce<{
       [key: string]: string;
@@ -3355,7 +3868,8 @@ function createBaseFriendRecallNoticeEvent(): FriendRecallNoticeEvent {
     postType: "",
     noticeType: "",
     userId: 0,
-    messageId: undefined,
+    messageId: 0,
+    messageReceipt: undefined,
     extra: {},
   };
 }
@@ -3380,9 +3894,12 @@ export const FriendRecallNoticeEvent = {
     if (message.userId !== 0) {
       writer.uint32(40).int64(message.userId);
     }
-    if (message.messageId !== undefined) {
+    if (message.messageId !== 0) {
+      writer.uint32(48).int32(message.messageId);
+    }
+    if (message.messageReceipt !== undefined) {
       MessageReceipt.encode(
-        message.messageId,
+        message.messageReceipt,
         writer.uint32(58).fork()
       ).ldelim();
     }
@@ -3420,8 +3937,14 @@ export const FriendRecallNoticeEvent = {
         case 5:
           message.userId = longToNumber(reader.int64() as Long);
           break;
+        case 6:
+          message.messageId = reader.int32();
+          break;
         case 7:
-          message.messageId = MessageReceipt.decode(reader, reader.uint32());
+          message.messageReceipt = MessageReceipt.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 255:
           const entry255 = FriendRecallNoticeEvent_ExtraEntry.decode(
@@ -3447,8 +3970,9 @@ export const FriendRecallNoticeEvent = {
       postType: isSet(object.postType) ? String(object.postType) : "",
       noticeType: isSet(object.noticeType) ? String(object.noticeType) : "",
       userId: isSet(object.userId) ? Number(object.userId) : 0,
-      messageId: isSet(object.messageId)
-        ? MessageReceipt.fromJSON(object.messageId)
+      messageId: isSet(object.messageId) ? Number(object.messageId) : 0,
+      messageReceipt: isSet(object.messageReceipt)
+        ? MessageReceipt.fromJSON(object.messageReceipt)
         : undefined,
       extra: isObject(object.extra)
         ? Object.entries(object.extra).reduce<{ [key: string]: string }>(
@@ -3470,8 +3994,10 @@ export const FriendRecallNoticeEvent = {
     message.noticeType !== undefined && (obj.noticeType = message.noticeType);
     message.userId !== undefined && (obj.userId = Math.round(message.userId));
     message.messageId !== undefined &&
-      (obj.messageId = message.messageId
-        ? MessageReceipt.toJSON(message.messageId)
+      (obj.messageId = Math.round(message.messageId));
+    message.messageReceipt !== undefined &&
+      (obj.messageReceipt = message.messageReceipt
+        ? MessageReceipt.toJSON(message.messageReceipt)
         : undefined);
     obj.extra = {};
     if (message.extra) {
@@ -3491,9 +4017,10 @@ export const FriendRecallNoticeEvent = {
     message.postType = object.postType ?? "";
     message.noticeType = object.noticeType ?? "";
     message.userId = object.userId ?? 0;
-    message.messageId =
-      object.messageId !== undefined && object.messageId !== null
-        ? MessageReceipt.fromPartial(object.messageId)
+    message.messageId = object.messageId ?? 0;
+    message.messageReceipt =
+      object.messageReceipt !== undefined && object.messageReceipt !== null
+        ? MessageReceipt.fromPartial(object.messageReceipt)
         : undefined;
     message.extra = Object.entries(object.extra ?? {}).reduce<{
       [key: string]: string;
@@ -4071,10 +4598,9 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
-        Exclude<keyof I, KeysOfUnion<P>>,
-        never
-      >;
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 function longToNumber(long: Long): number {
   if (long.gt(Number.MAX_SAFE_INTEGER)) {

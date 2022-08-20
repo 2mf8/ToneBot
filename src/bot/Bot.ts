@@ -91,7 +91,7 @@ export class Bot {
     })
   }
 
-  async sendPrivateMessage(userId: Long | string | number, msg: string | Msg, autoEscape: boolean = true): Promise<Api.SendGroupMsgResp | null> {
+  async sendPrivateMessage(userId: Long | string | number, msg: string | Msg, autoEscape: boolean = true): Promise<Api.SendPrivateMsgResp | null> {
     if (typeof msg == 'string') {
       msg = Msg.builder().text(msg)
     }

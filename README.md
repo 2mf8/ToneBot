@@ -6,6 +6,8 @@
 
 推荐安装版本: LTS (长期支持版)
 
+最新版：[![npm](https://img.shields.io/npm/v/ts-pbbot.svg)](https://www.npmjs.com/package/ts-pbbot)
+
 ## 运行方法(下载源码版)
 
 下载源码并解压，然后进入解压目录

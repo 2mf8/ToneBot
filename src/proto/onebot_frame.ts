@@ -110,113 +110,113 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "onebot";
 
 export interface Frame {
-  botId: number;
+  botId?: number;
   frameType: Frame_FrameType;
-  echo: string;
+  echo?: string;
   /** 是否正常 （API resp） */
-  ok: boolean;
-  extra: { [key: string]: string };
-  privateMessageEvent: PrivateMessageEvent | undefined;
-  groupMessageEvent: GroupMessageEvent | undefined;
-  groupUploadNoticeEvent: GroupUploadNoticeEvent | undefined;
-  groupAdminNoticeEvent: GroupAdminNoticeEvent | undefined;
-  groupDecreaseNoticeEvent: GroupDecreaseNoticeEvent | undefined;
-  groupIncreaseNoticeEvent: GroupIncreaseNoticeEvent | undefined;
-  groupBanNoticeEvent: GroupBanNoticeEvent | undefined;
-  friendAddNoticeEvent: FriendAddNoticeEvent | undefined;
-  groupRecallNoticeEvent: GroupRecallNoticeEvent | undefined;
-  friendRecallNoticeEvent: FriendRecallNoticeEvent | undefined;
-  friendRequestEvent: FriendRequestEvent | undefined;
-  groupRequestEvent: GroupRequestEvent | undefined;
-  groupTempMessageEvent: GroupTempMessageEvent | undefined;
-  groupNotifyEvent: GroupNotifyEvent | undefined;
-  channelMessageEvent: ChannelMessageEvent | undefined;
-  sendPrivateMsgReq: SendPrivateMsgReq | undefined;
-  sendGroupMsgReq: SendGroupMsgReq | undefined;
-  sendMsgReq: SendMsgReq | undefined;
-  deleteMsgReq: DeleteMsgReq | undefined;
-  getMsgReq: GetMsgReq | undefined;
-  getForwardMsgReq: GetForwardMsgReq | undefined;
-  sendLikeReq: SendLikeReq | undefined;
-  setGroupKickReq: SetGroupKickReq | undefined;
-  setGroupBanReq: SetGroupBanReq | undefined;
-  setGroupAnonymousBanReq: SetGroupAnonymousBanReq | undefined;
-  setGroupWholeBanReq: SetGroupWholeBanReq | undefined;
-  setGroupAdminReq: SetGroupAdminReq | undefined;
-  setGroupAnonymousReq: SetGroupAnonymousReq | undefined;
-  setGroupCardReq: SetGroupCardReq | undefined;
-  setGroupNameReq: SetGroupNameReq | undefined;
-  setGroupLeaveReq: SetGroupLeaveReq | undefined;
-  setGroupSpecialTitleReq: SetGroupSpecialTitleReq | undefined;
-  setFriendAddRequestReq: SetFriendAddRequestReq | undefined;
-  setGroupAddRequestReq: SetGroupAddRequestReq | undefined;
-  getLoginInfoReq: GetLoginInfoReq | undefined;
-  getStrangerInfoReq: GetStrangerInfoReq | undefined;
-  getFriendListReq: GetFriendListReq | undefined;
-  getGroupInfoReq: GetGroupInfoReq | undefined;
-  getGroupListReq: GetGroupListReq | undefined;
-  getGroupMemberInfoReq: GetGroupMemberInfoReq | undefined;
-  getGroupMemberListReq: GetGroupMemberListReq | undefined;
-  getGroupHonorInfoReq: GetGroupHonorInfoReq | undefined;
-  getCookiesReq: GetCookiesReq | undefined;
-  getCsrfTokenReq: GetCsrfTokenReq | undefined;
-  getCredentialsReq: GetCredentialsReq | undefined;
-  getRecordReq: GetRecordReq | undefined;
-  getImageReq: GetImageReq | undefined;
-  canSendImageReq: CanSendImageReq | undefined;
-  canSendRecordReq: CanSendRecordReq | undefined;
-  getStatusReq: GetStatusReq | undefined;
-  getVersionInfoReq: GetVersionInfoReq | undefined;
-  setRestartReq: SetRestartReq | undefined;
-  cleanCacheReq: CleanCacheReq | undefined;
-  setGroupSignInReq: SetGroupSignInReq | undefined;
-  sendMusicReq: SendMusicReq | undefined;
-  sendGroupPokeReq: SendGroupPokeReq | undefined;
-  sendFriendPokeReq: SendFriendPokeReq | undefined;
-  sendChannelMsgReq: SendChannelMsgReq | undefined;
-  sendPrivateMsgResp: SendPrivateMsgResp | undefined;
-  sendGroupMsgResp: SendGroupMsgResp | undefined;
-  sendMsgResp: SendMsgResp | undefined;
-  deleteMsgResp: DeleteMsgResp | undefined;
-  getMsgResp: GetMsgResp | undefined;
-  getForwardMsgResp: GetForwardMsgResp | undefined;
-  sendLikeResp: SendLikeResp | undefined;
-  setGroupKickResp: SetGroupKickResp | undefined;
-  setGroupBanResp: SetGroupBanResp | undefined;
-  setGroupAnonymousBanResp: SetGroupAnonymousBanResp | undefined;
-  setGroupWholeBanResp: SetGroupWholeBanResp | undefined;
-  setGroupAdminResp: SetGroupAdminResp | undefined;
-  setGroupAnonymousResp: SetGroupAnonymousResp | undefined;
-  setGroupCardResp: SetGroupCardResp | undefined;
-  setGroupNameResp: SetGroupNameResp | undefined;
-  setGroupLeaveResp: SetGroupLeaveResp | undefined;
-  setGroupSpecialTitleResp: SetGroupSpecialTitleResp | undefined;
-  setFriendAddRequestResp: SetFriendAddRequestResp | undefined;
-  setGroupAddRequestResp: SetGroupAddRequestResp | undefined;
-  getLoginInfoResp: GetLoginInfoResp | undefined;
-  getStrangerInfoResp: GetStrangerInfoResp | undefined;
-  getFriendListResp: GetFriendListResp | undefined;
-  getGroupInfoResp: GetGroupInfoResp | undefined;
-  getGroupListResp: GetGroupListResp | undefined;
-  getGroupMemberInfoResp: GetGroupMemberInfoResp | undefined;
-  getGroupMemberListResp: GetGroupMemberListResp | undefined;
-  getGroupHonorInfoResp: GetGroupHonorInfoResp | undefined;
-  getCookiesResp: GetCookiesResp | undefined;
-  getCsrfTokenResp: GetCsrfTokenResp | undefined;
-  getCredentialsResp: GetCredentialsResp | undefined;
-  getRecordResp: GetRecordResp | undefined;
-  getImageResp: GetImageResp | undefined;
-  canSendImageResp: CanSendImageResp | undefined;
-  canSendRecordResp: CanSendRecordResp | undefined;
-  getStatusResp: GetStatusResp | undefined;
-  getVersionInfoResp: GetVersionInfoResp | undefined;
-  setRestartResp: SetRestartResp | undefined;
-  cleanCacheResp: CleanCacheResp | undefined;
-  setGroupSignInResp: SetGroupSignInResp | undefined;
-  sendMusicResp: SendMusicResp | undefined;
-  sendGroupPokeResp: SendGroupPokeResp | undefined;
-  sendFriendPokeResp: SendFriendPokeResp | undefined;
-  sendChannelMsgResp: SendChannelMsgResp | undefined;
+  ok?: boolean;
+  extra?: { [key: string]: string };
+  privateMessageEvent?: PrivateMessageEvent;
+  groupMessageEvent?: GroupMessageEvent;
+  groupUploadNoticeEvent?: GroupUploadNoticeEvent;
+  groupAdminNoticeEvent?: GroupAdminNoticeEvent;
+  groupDecreaseNoticeEvent?: GroupDecreaseNoticeEvent;
+  groupIncreaseNoticeEvent?: GroupIncreaseNoticeEvent;
+  groupBanNoticeEvent?: GroupBanNoticeEvent;
+  friendAddNoticeEvent?: FriendAddNoticeEvent;
+  groupRecallNoticeEvent?: GroupRecallNoticeEvent;
+  friendRecallNoticeEvent?: FriendRecallNoticeEvent;
+  friendRequestEvent?: FriendRequestEvent;
+  groupRequestEvent?: GroupRequestEvent;
+  groupTempMessageEvent?: GroupTempMessageEvent;
+  groupNotifyEvent?: GroupNotifyEvent;
+  channelMessageEvent?: ChannelMessageEvent;
+  sendPrivateMsgReq?: SendPrivateMsgReq;
+  sendGroupMsgReq?: SendGroupMsgReq;
+  sendMsgReq?: SendMsgReq;
+  deleteMsgReq?: DeleteMsgReq;
+  getMsgReq?: GetMsgReq;
+  getForwardMsgReq?: GetForwardMsgReq;
+  sendLikeReq?: SendLikeReq;
+  setGroupKickReq?: SetGroupKickReq;
+  setGroupBanReq?: SetGroupBanReq;
+  setGroupAnonymousBanReq?: SetGroupAnonymousBanReq;
+  setGroupWholeBanReq?: SetGroupWholeBanReq;
+  setGroupAdminReq?: SetGroupAdminReq;
+  setGroupAnonymousReq?: SetGroupAnonymousReq;
+  setGroupCardReq?: SetGroupCardReq;
+  setGroupNameReq?: SetGroupNameReq;
+  setGroupLeaveReq?: SetGroupLeaveReq;
+  setGroupSpecialTitleReq?: SetGroupSpecialTitleReq;
+  setFriendAddRequestReq?: SetFriendAddRequestReq;
+  setGroupAddRequestReq?: SetGroupAddRequestReq;
+  getLoginInfoReq?: GetLoginInfoReq;
+  getStrangerInfoReq?: GetStrangerInfoReq;
+  getFriendListReq?: GetFriendListReq;
+  getGroupInfoReq?: GetGroupInfoReq;
+  getGroupListReq?: GetGroupListReq;
+  getGroupMemberInfoReq?: GetGroupMemberInfoReq;
+  getGroupMemberListReq?: GetGroupMemberListReq;
+  getGroupHonorInfoReq?: GetGroupHonorInfoReq;
+  getCookiesReq?: GetCookiesReq;
+  getCsrfTokenReq?: GetCsrfTokenReq;
+  getCredentialsReq?: GetCredentialsReq;
+  getRecordReq?: GetRecordReq;
+  getImageReq?: GetImageReq;
+  canSendImageReq?: CanSendImageReq;
+  canSendRecordReq?: CanSendRecordReq;
+  getStatusReq?: GetStatusReq;
+  getVersionInfoReq?: GetVersionInfoReq;
+  setRestartReq?: SetRestartReq;
+  cleanCacheReq?: CleanCacheReq;
+  setGroupSignInReq?: SetGroupSignInReq;
+  sendMusicReq?: SendMusicReq;
+  sendGroupPokeReq?: SendGroupPokeReq;
+  sendFriendPokeReq?: SendFriendPokeReq;
+  sendChannelMsgReq?: SendChannelMsgReq;
+  sendPrivateMsgResp?: SendPrivateMsgResp;
+  sendGroupMsgResp?: SendGroupMsgResp;
+  sendMsgResp?: SendMsgResp;
+  deleteMsgResp?: DeleteMsgResp;
+  getMsgResp?: GetMsgResp;
+  getForwardMsgResp?: GetForwardMsgResp;
+  sendLikeResp?: SendLikeResp;
+  setGroupKickResp?: SetGroupKickResp;
+  setGroupBanResp?: SetGroupBanResp;
+  setGroupAnonymousBanResp?: SetGroupAnonymousBanResp;
+  setGroupWholeBanResp?: SetGroupWholeBanResp;
+  setGroupAdminResp?: SetGroupAdminResp;
+  setGroupAnonymousResp?: SetGroupAnonymousResp;
+  setGroupCardResp?: SetGroupCardResp;
+  setGroupNameResp?: SetGroupNameResp;
+  setGroupLeaveResp?: SetGroupLeaveResp;
+  setGroupSpecialTitleResp?: SetGroupSpecialTitleResp;
+  setFriendAddRequestResp?: SetFriendAddRequestResp;
+  setGroupAddRequestResp?: SetGroupAddRequestResp;
+  getLoginInfoResp?: GetLoginInfoResp;
+  getStrangerInfoResp?: GetStrangerInfoResp;
+  getFriendListResp?: GetFriendListResp;
+  getGroupInfoResp?: GetGroupInfoResp;
+  getGroupListResp?: GetGroupListResp;
+  getGroupMemberInfoResp?: GetGroupMemberInfoResp;
+  getGroupMemberListResp?: GetGroupMemberListResp;
+  getGroupHonorInfoResp?: GetGroupHonorInfoResp;
+  getCookiesResp?: GetCookiesResp;
+  getCsrfTokenResp?: GetCsrfTokenResp;
+  getCredentialsResp?: GetCredentialsResp;
+  getRecordResp?: GetRecordResp;
+  getImageResp?: GetImageResp;
+  canSendImageResp?: CanSendImageResp;
+  canSendRecordResp?: CanSendRecordResp;
+  getStatusResp?: GetStatusResp;
+  getVersionInfoResp?: GetVersionInfoResp;
+  setRestartResp?: SetRestartResp;
+  cleanCacheResp?: CleanCacheResp;
+  setGroupSignInResp?: SetGroupSignInResp;
+  sendMusicResp?: SendMusicResp;
+  sendGroupPokeResp?: SendGroupPokeResp;
+  sendFriendPokeResp?: SendFriendPokeResp;
+  sendChannelMsgResp?: SendChannelMsgResp;
 }
 
 export enum Frame_FrameType {
@@ -970,24 +970,26 @@ function createBaseFrame(): Frame {
 
 export const Frame = {
   encode(message: Frame, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.botId !== 0) {
+    if (message.botId !== undefined) {
       writer.uint32(8).int64(message.botId);
     }
     if (message.frameType !== 0) {
       writer.uint32(16).int32(message.frameType);
     }
-    if (message.echo !== "") {
+    if (message.echo !== undefined) {
       writer.uint32(26).string(message.echo);
     }
     if (message.ok === true) {
       writer.uint32(32).bool(message.ok);
     }
-    Object.entries(message.extra).forEach(([key, value]) => {
-      Frame_ExtraEntry.encode(
-        { key: key as any, value },
-        writer.uint32(802).fork()
-      ).ldelim();
-    });
+    if (message.extra !== undefined){
+      Object.entries(message.extra).forEach(([key, value]) => {
+        Frame_ExtraEntry.encode(
+          { key: key as any, value },
+          writer.uint32(802).fork()
+        ).ldelim();
+      });
+    }
     if (message.privateMessageEvent !== undefined) {
       PrivateMessageEvent.encode(
         message.privateMessageEvent,
@@ -1615,7 +1617,7 @@ export const Frame = {
           break;
         case 100:
           const entry100 = Frame_ExtraEntry.decode(reader, reader.uint32());
-          if (entry100.value !== undefined) {
+          if (entry100.value !== undefined && message.extra !== undefined) {
             message.extra[entry100.key] = entry100.value;
           }
           break;

@@ -17,7 +17,7 @@
 
 运行`npm run start`
 
-运行 [pbrq](https://github.com/ProtobufBot/pbrq/releases) ，登陆机器人QQ
+运行 [pbrq](https://github.com/ProtobufBot/pbrq/releases) ，登陆机器人QQ 或 运行 [GMC](https://github.com/2mf8/Go-Mirai-Client/releases) ，登陆机器人QQ
 
 ## 基于现有项目开发
 可以参考 `demo` 里的例子进行开发

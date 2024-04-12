@@ -1,4 +1,4 @@
-import WebSocket from "ws";
+import {WebSocket} from "ws";
 import {LRUCache} from 'lru-cache'
 import {EventHandler} from "./EventHandler";
 import {Msg} from "../util/Msg";

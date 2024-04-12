@@ -1,6 +1,6 @@
 {
   "name": "tonebot",
-  "version": "0.1.3",
+  "version": "0.1.6",
   "description": "TS 开发QQ机器人",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -20,12 +20,12 @@
   ],
   "author": "2mf8",
   "bugs": {
-    "url": "https://github.com/2mf8/TSPbBot/issues"
+    "url": "https://github.com/2mf8/ToneBot/issues"
   },
-  "homepage": "https://github.com/2mf8/TSPbBot",
+  "homepage": "https://github.com/2mf8/ToneBot",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/2mf8/TSPbBot.git"
+    "url": "git+https://github.com/2mf8/ToneBot.git"
   },
   "license": "ISC",
   "dependencies": {

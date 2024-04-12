@@ -7,7 +7,7 @@
 推荐安装版本: LTS (长期支持版)
 
 ## 最新版本
-最新版：[![npm](https://img.shields.io/npm/v/ts-pbbot.svg)](https://www.npmjs.com/package/ts-pbbot)
+最新版：[![npm](https://img.shields.io/npm/v/tonebot.svg)](https://www.npmjs.com/package/tonebot)
 
 ## 运行方法(下载源码版)
 
@@ -17,20 +17,18 @@
 
 运行`npm run start`
 
-运行 [pbrq](https://github.com/ProtobufBot/pbrq/releases) ，登陆机器人QQ 或 运行 [GMC](https://github.com/2mf8/Go-Mirai-Client/releases) ，登陆机器人QQ
+运行 [Lagrange.Core](https://github.com/KonataDev/Lagrange.Core/actions) ，登陆机器人账号
 
 ## 基于现有项目开发
 可以参考 `demo` 里的例子进行开发
 
-或者基于 [GroupAdminForRQ](https://github.com/2mf8/GroupAdminForRQ) 进行开发
-
 ## 用Javascript开发
 
-安装`npm i ts-pbbot`
+安装`npm i tonebot`
 ```javascript
-let {EventHandler, Msg, createBotServer} = require("ts-pbbot");
+let {EventHandler, createBotServer, Msg} = require("tonebot")
 
-let port = 8081
+let port = 8082
 
 console.log("开始启动")
 
@@ -43,38 +41,26 @@ EventHandler.handleDisconnect = async (bot) => {
 }
 
 EventHandler.handlePrivateMessage = async (bot, event) => {
-  let rawMsg = event.rawMessage
-  let userId = event.userId
+  let rawMsg = event.raw_message
+  let userId = event.user_id
   console.log(`收到私聊消息，发送者: ${userId.toString()}，内容: ${rawMsg}`)
-  await bot.sendPrivateMessage(userId, "hello world", false)
+  let msg = Msg.builder().text("hello world")
+  await bot.sendPrivateMessage(userId, msg)
 }
 
 EventHandler.handleGroupMessage = async (bot, event) => {
-  var rawMsg = event.rawMessage
-  let userId = event.userId
-  let groupId = event.groupId
-  let message_id = event.messageId
-  console.log(`收到群聊消息，群号: ${groupId.toString()}，发送者: ${userId.toString()}，内容: ${rawMsg}`)
-  if (rawMsg == "撤回" && message_id != undefined){
-  await bot.deleteMsg(message_id)
-  return
-  }
-  //if (rawMsg !== "hello") return
-  if (rawMsg == "hello"){
-  let msg = Msg.builder().text("world")
-  await bot.sendGroupMessage(groupId, msg)
-  return
-  }
+    var rawMsg = event.raw_message
+    let userId = event.user_id
+    let groupId = event.group_id
+    console.log(`收到群聊消息，群号: ${groupId.toString()}，发送者: ${userId.toString()}，内容: ${rawMsg}`)
+
+    if (rawMsg == "hello"){
+        let msg = Msg.builder().text("world")
+        await bot.sendGroupMessage(groupId, msg)
+        return
+    }
 }
 
-EventHandler.handleChannelMessage = async (bot, event) => {
-  let guildId = event.guildId
-  let channelId = event.channelId
-  let userId = event.sender.tinyId
-  let rawMsg = event.rawMessage
-    console.log(`收到频道消息，Guilid: ${guildId.toString()}，ChannelId：${channelId.toString()}，发送者: ${userId.toString()}，内容: ${rawMsg}`)
-    await bot.sendChannelMessage(guildId, channelId, "成功", false)
-}
 
 createBotServer(port)
 
@@ -82,13 +68,11 @@ console.log(`启动成功，端口：${port}`)
 ```
 ## 用Typescript开发
 
-安装`npm i ts-pbbot`
+安装`npm i tonebot`
 ```typescript
-import { EventHandler } from "ts-pbbot/lib/bot/EventHandler";
-import { createBotServer } from "ts-pbbot/lib/server/BotWsServer";
-import { Msg } from "ts-pbbot/lib/util/Msg";
+import {EventHandler, createBotServer, Msg} from "tonebot";
 
-let port = 8081
+let port = 8082
 
 console.log("开始启动")
 
@@ -101,44 +85,31 @@ EventHandler.handleDisconnect = async (bot) => {
 }
 
 EventHandler.handlePrivateMessage = async (bot, event) => {
-  let rawMsg = event?.rawMessage
-  let userId = event?.userId
+  let rawMsg = event?.raw_message
+  let userId = event?.user_id
   if (userId != undefined) {
-  console.log(`收到私聊消息，发送者: ${userId.toString()}，内容: ${rawMsg}`)
-  await bot.sendPrivateMessage(userId, "hello world")
+    console.log(`收到私聊消息，发送者: ${userId.toString()}，内容: ${rawMsg}`)
+    let msg = Msg.builder().text("hello world")
+    await bot.sendPrivateMessage(userId, msg)
   }
 }
 
 EventHandler.handleGroupMessage = async (bot, event) => {
-  var rawMsg = event?.rawMessage
-  let userId = event?.userId
-  let groupId = event?.groupId
-  let message_id = event?.messageId
+  var rawMsg = event?.raw_message
+  let userId = event?.user_id
+  let groupId = event?.group_id
+
   if (userId != undefined && groupId != undefined && rawMsg != undefined){
-  console.log(`收到群聊消息，群号: ${groupId.toString()}，发送者: ${userId.toString()}，内容: ${rawMsg}`)
-    if (rawMsg == "撤回" && message_id != undefined){
-    await bot.deleteMsg(message_id)
-    return
-    }
-    //if (rawMsg !== "hello") return
-    if (rawMsg == "hello"){
-    let msg = Msg.builder().text("world")
-    await bot.sendGroupMessage(groupId, msg)
-    return
-  }
+    console.log(`收到群聊消息，群号: ${groupId.toString()}，发送者: ${userId.toString()}，内容: ${rawMsg}`)
+
+      if (rawMsg == "hello"){
+        let msg = Msg.builder().text("world")
+        await bot.sendGroupMessage(groupId, msg)
+        return
+      }
   }
 }
 
-EventHandler.handleChannelMessage = async (bot, event) => {
-  let guildId = event?.guildId
-  let channelId = event?.channelId
-  let userId = event?.sender?.tinyId
-  let rawMsg = event?.rawMessage
-  if (guildId != undefined && channelId != undefined && userId != undefined) {
-    console.log(`收到频道消息，Guilid: ${guildId.toString()}，ChannelId：${channelId.toString()}，发送者: ${userId.toString()}，内容: ${rawMsg}`)
-    await bot.sendChannelMessage(guildId, channelId, "成功", false)
-  }
-}
 
 createBotServer(port)
 

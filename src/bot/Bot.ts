@@ -177,11 +177,7 @@ export class Bot {
           auto_escape: autoEscape
         },
         echo: echo,
-    }).then(resp => {
-      console.log(resp)
-      let a = JSON.parse(JSON.stringify(resp)) || null
-      return a
-    })
+    }).then(resp => JSON.parse(JSON.stringify(resp)) || null)
       .catch(() => null)
   }
 

@@ -1,10 +1,8 @@
-import Long from "long";
 import {Bot} from "../bot/Bot";
-import { Message, MessageReceipt } from "../proto/onebot_base";
-import {toLong} from "./convertLong";
+import * as event from "../onebot/onebot_event";
 
 export class Msg {
-  public messageList: Message[];
+  public messageList: event.IMessage[];
 
   constructor(){
     this.messageList = [];
@@ -44,11 +42,11 @@ export class Msg {
     return this
   }
 
-  at(qq: Long | string | number): Msg {
+  at(qq: number): Msg {
     this.messageList.push({
       type: "at",
       data: {
-        "qq": toLong(qq).toString()
+        "qq": qq.toString()
       }
     })
     return this
@@ -175,17 +173,6 @@ export class Msg {
     return this
   }
 
-  /** GMC 1.1.0 以上版本和pbrq皆可用 */
-  replyByMessageReceipt(messageId: MessageReceipt): Msg {
-    this.messageList.push({
-      type: "reply",
-      data: {
-        "message_id": messageId.toString()
-      }
-    })
-    return this
-  }
-
   sleep(time: Long): Msg {
     this.messageList.push({
       type: "sleep",
@@ -219,7 +206,7 @@ export class Msg {
     return this
   }
 
-  poke(qq: Long | number | string): Msg {
+  poke(qq: number): Msg {
     this.messageList.push({
       type: "poke",
       data: {
@@ -229,13 +216,33 @@ export class Msg {
     return this
   }
 
-  sendToGroup(bot: Bot, groupId: Long | string | number, autoEscape: boolean = true): Msg {
-    bot.sendGroupMessage(toLong(groupId), this, autoEscape)
+  sendToGroup(bot: Bot, groupId: number, autoEscape: boolean = true): Msg {
+    bot.sendGroupMessage(groupId, this, autoEscape)
     return this
   }
 
-  sendToFriend(bot: Bot, userId: Long | string | number, autoEscape: boolean = true): Msg {
-    bot.sendPrivateMessage(toLong(userId), this, autoEscape)
+  sendToFriend(bot: Bot, userId: number, autoEscape: boolean = true): Msg {
+    bot.sendPrivateMessage(userId, this, autoEscape)
+    return this
+  }
+
+  forward(id: string): Msg {
+    this.messageList.push({
+      type: "forward",
+      data: {
+        "id": id
+      }
+    })
+    return this
+  }
+
+  longMsg(id: string): Msg {
+    this.messageList.push({
+        type: "longmsg",
+        data: {
+          "id": id
+        }
+      })
     return this
   }
 }

@@ -1,5 +1,4 @@
 import * as Websocket from 'ws'
-import Long from "long";
 import {Bot} from "../bot/Bot";
 import {EventHandler} from "../bot/EventHandler";
 
@@ -13,7 +12,7 @@ export function createBotServer(port: number) {
       session.close()
       return
     }
-    let botId = Long.fromString(xSelfId)
+    let botId = Number(xSelfId)
     let bot = new Bot(Number(botId), session)
     Bot.bots.set(botId, bot)
     await EventHandler.handleConnect(bot)

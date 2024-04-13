@@ -184,10 +184,6 @@ export class KeyBoard {
             buttons: this.buttons
         }
         this.rows.push(row)
-        return this
-    }
-
-    resetRow(): KeyBoard{
         this.buttons = []
         this.row = {}
         return this

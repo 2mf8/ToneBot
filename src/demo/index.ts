@@ -50,7 +50,7 @@ EventHandler.handleGroupMessage = async (bot, event) => {
         let k = KeyBoard.builder()
           .textButton("测试", "已测试", "成功", false, true)
           .urlButton("爱魔方吧", "一仝", "https://2mf8.cn", false, true)
-          .setRow().resetRow()
+          .setRow()
           .textButton("测试2", "已测试2", "成功", false, true)
           .setRow()
         await bot.sendMarkDownAndKeyBoardMsg(groupId, userId, md, k)

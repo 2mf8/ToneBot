@@ -42,11 +42,9 @@ var PermissionTypSpecifyRoleIDs = 3 // PermissionTypSpecifyRoleIDs 指定身份�
 
 export class KeyBoard {
     private buttons: Button[]
-    private row: Row
     public rows: Row[]
     constructor() {
         this.buttons = []
-        this.row = {}
         this.rows = []
     }
 
@@ -185,7 +183,6 @@ export class KeyBoard {
         }
         this.rows.push(row)
         this.buttons = []
-        this.row = {}
         return this
     }
 

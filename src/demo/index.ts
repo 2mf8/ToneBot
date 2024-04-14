@@ -33,15 +33,16 @@ EventHandler.handleGroupMessage = async (bot, event) => {
   let message_id = event?.message_id
   var role: string
 
+  console.log(event?.message_id)
   if (userId != undefined && groupId != undefined && rawMsg != undefined){
     console.log(`收到群聊消息，群号: ${groupId.toString()}，发送者: ${userId.toString()}，内容: ${rawMsg}`)
-      if (rawMsg == "hello"){ 
+      /*if (rawMsg == "hello"){ 
         let md = MarkDown.builder()
           .h1("标题").newLine()
           .blockReference("块引用")
           .blockReference("不错")
         await bot.sendMarkDownMsg(groupId, userId, md)
-      }
+      }*/
 
       if (rawMsg == "mk") {
         let md = MarkDown.builder()
@@ -54,13 +55,19 @@ EventHandler.handleGroupMessage = async (bot, event) => {
           .setRow()
           .textButton("测试2", "已测试2", "成功", false, true)
           .setRow()
-        await bot.sendMarkDownAndKeyBoardMsg(groupId, userId, md, k)
+          let a = await bot.sendMarkDownAndKeyBoardMsg(groupId, userId, md, k)
+          return
       }
 
       if (rawMsg == "hello"){
         let msg = Msg.builder().text("好家伙").text("\n消息来自ToneBot").at(userId)
         let a = await bot.sendGroupMessage(groupId, msg)
-        console.log(a?.data.message_id)
+        if (a != null){
+          let gm = await bot.getMsg(a.data.message_id)
+          if (gm != null){
+            console.log(JSON.stringify(gm))
+          }
+        }
         return
       }
   }

@@ -85,14 +85,14 @@ export type Params = {
 }
 
 export type ForwardParams = {
-	Messages: event.ForwardMsg[]
+	messages: event.ForwardMsg[]
 }
 
 export interface SendMsgResponse{
-	Status:  string
-	RetCode: number
-	Data:    SendMsgResponseData
-	Echo:    string
+	status:  string
+	retcode: number
+	data:    SendMsgResponseData
+	echo:    string
 }
 export type SendMsgResponseData = {
 	message_id: number
@@ -124,198 +124,198 @@ export type GroupMemberInfo = {
 }
 
 export interface GetGroupInfoResp{
-	Status:  string
-	RetCode: number
-	Data:    GroupInfo
-	Echo:    string
+	status:  string
+	retcode: number
+	data:    GroupInfo
+	echo:    string
 }
 
 export type GroupInfo = {
-	GroupId:        number
-	GroupName:      string
-	MemberCount:    number
-	MaxMemberCount: number
+	group_id:        number
+	group_name:      string
+	member_count:    number
+	max_member_count: number
 }
 
 export interface SetGroupBanResp{
-	Status:  string
-	RetCode: number
-	Data:    any
-	Echo:   string
+	status:  string
+	retcode: number
+	data:    any
+	echo:   string
 }
 
 export interface SetGroupKickResp{
-	Status:  string
-	RetCode: number
-	Data:    any
-	Echo:    string
+	status:  string
+	retcode: number
+	data:    any
+	echo:    string
 }
 
 export interface SetGroupLeaveResp{
-	Status:  string
-	RetCode: number
-	Data:    any
-	Echo:    string
+	status:  string
+	retcode: number
+	data:    any
+	echo:    string
 }
 
 export interface SetGroupWholeBanResp{
-	Status:  string
-	RetCode: number
-	Data:    any
-	Echo:    string
+	status:  string
+	retcode: number
+	data:    any
+	echo:    string
 }
 
 export interface DeleteMsgResp{
-	Status:  string
-	RetCode: number
-	Data:    any
-	Echo:    string
+	status:  string
+	retcode: number
+	data:    any
+	echo:    string
 }
 
 export interface GetMsgResp{
-	Status:  string  
-	RetCode: number 
-	Data:    IGetMsg
-	Echo:    string 
+	status:  string  
+	retcode: number 
+	data:    IGetMsg
+	echo:    string 
 }
 
 export type IGetMsg = {
-	Time:        number
-	MessageType: string
-	MessageId:   number
-	RealId:      number
-	//Sender:      GroupSender
-	//Message     []*IMessage
+	time:        number
+	message_type: string
+	message_id:   number
+	real_id:      number
+	sender:      event.Groupsender
+	message:     event.IMessage[]
 }
 
 export interface GetForwardMsgResp{
-	Status:  string
-	RetCode: number
-	//Data:    []*IMessage
-	Echo:    string
+	status:  string
+	retcode: number
+	data:    event.IMessage[]
+	echo:    string
 }
 
 export interface SendLikeResp{
-	Status:  string
-	RetCode: number
-	Data:    any
-	Echo:    string
+	status:  string
+	retcode: number
+	data:    any
+	echo:    string
 }
 
 export interface SetGroupAnonymousBanResp{
-	Status:  string
-	RetCode: number
-	Data:    any
-	Echo:    string
+	status:  string
+	retcode: number
+	data:    any
+	echo:    string
 }
 
 export interface SetGroupAdminResp{
-	Status:  string
-	RetCode: number
-	Data:    any
-	Echo:    string
+	status:  string
+	retcode: number
+	data:    any
+	echo:    string
 }
 
 export interface SetGroupAnonymousResp{
-	Status:  string
-	RetCode: number
-	Data:    any
-	Echo:    string
+	status:  string
+	retcode: number
+	data:    any
+	echo:    string
 }
 
 export interface SetGroupCardResp{
-	Status:  string
-	RetCode: number
-	Data:    any
-	Echo:    string
+	status:  string
+	retcode: number
+	data:    any
+	echo:    string
 }
 
 export interface SetGroupNameResp{
-	Status:  string
-	RetCode: number
-	Data:    any
-	Echo:    string
+	status:  string
+	retcode: number
+	data:    any
+	echo:    string
 }
 
 export interface SetGroupSpecialTitleResp{
-	Status:  string
-	RetCode: number
-	Data:    any
-	Echo:    string
+	status:  string
+	retcode: number
+	data:    any
+	echo:    string
 }
 
 export interface SetFriendAddRequestResp{
-	Status:  string
-	RetCode: number
-	Data:    any
-	Echo:    string
+	status:  string
+	retcode: number
+	data:    any
+	echo:    string
 }
 
 export interface SetGroupAddRequestResp{
-	Status:  string
-	RetCode: number
-	Data:    any
-	Echo:    string
+	status:  string
+	retcode: number
+	data:    any
+	echo:    string
 }
 
 export interface GetLoginInfoResp{
-	Status:  string         
-	RetCode: number          
-	Data:    IGetLoginInfo 
-	Echo:    string         
+	status:  string         
+	retcode: number          
+	data:    IGetLoginInfo 
+	echo:    string         
 }
 
 export type IGetLoginInfo = {
-	UserId:   number  
+	user_id:   number  
 	nickname: string 
 }
 
 export interface GetStrangerInfoResp{
-	Status:  string            
-	RetCode: number             
-	Data:    IGetStrangerInfo 
-	Echo:    string            
+	status:  string            
+	retcode: number             
+	data:    IGetStrangerInfo 
+	echo:    string            
 }
 
 export type IGetStrangerInfo = {
-	UserId:   number   
+	user_id:   number   
 	nickname: string  
 	sex:      string 
 	age:      number   
 }
 
 export interface GetFriendListResp{
-	Status:  string          
-	RetCode: number           
-	Data:    IGetFriendList 
-	Echo:    string          
+	status:  string          
+	retcode: number           
+	data:    IGetFriendList 
+	echo:    string          
 }
 
 export type IGetFriendList = {
-	UserId:   number  
+	user_id:   number  
 	nickname: string 
-	Remark:   string 
+	remark:   string 
 }
 
 export interface GetGroupListResp{
-	Status:  string       
-	RetCode: number        
-	Data:    GroupInfo[] 
-	Echo:    string       
+	status:  string       
+	retcode: number        
+	data:    GroupInfo[] 
+	echo:    string       
 }
 
 export interface GetGroupMemberListResp{
-	Status:  string             
-	RetCode: number              
-	Data:    GroupMemberInfo[] 
-	Echo:    string             
+	status:  string             
+	retcode: number              
+	data:    GroupMemberInfo[] 
+	echo:    string             
 }
 
 export interface GetGroupHonorInfoResp{
-	Status:  string              
-	RetCode: number               
-	Data:    IGetGroupHonorInfo 
-	Echo:    string              
+	status:  string              
+	retcode: number               
+	data:    IGetGroupHonorInfo 
+	echo:    string              
 }
 
 export type IGetGroupHonorInfo = {
@@ -329,138 +329,138 @@ export type IGetGroupHonorInfo = {
 }
 
 export type CurrentTalkative = {
-	UserId:   number  
+	user_id:   number  
 	nickname: string 
-	Avatar:   string 
-	DayCount: number  
+	avatar:   string 
+	day_count: number  
 }
 
 export type OtherList = {
-	UserId:      number  
+	user_id:      number  
 	nickname:    string 
-	Avatar:      string 
-	Description: string 
+	avatar:      string 
+	description: string 
 }
 
 export interface GetCookiesResp{
-	Status:  string   
-	RetCode: number    
-	Data:    Cookies 
-	Echo:    string   
+	status:  string   
+	retcode: number    
+	data:    Cookies 
+	echo:    string   
 }
 
 export type Cookies = {
-	Cookies: string 
+	cookies: string 
 }
 
 export interface GetCRSFTokenResp{
-	Status:  string 
-	RetCode: number  
-	Data:    Token 
-	Echo:    string 
+	status:  string 
+	retcode: number  
+	data:    Token 
+	echo:    string 
 }
 
 export type Token = {
-	Token: number 
+	token: number 
 }
 
 export interface GetCredentialsResp{
-	Status:  string           
-	RetCode: number            
-	Data:    CookiesAndToken 
-	Echo:    string           
+	status:  string           
+	retcode: number            
+	data:    CookiesAndToken 
+	echo:    string           
 }
 
 export type CookiesAndToken = {
-	Cookies: string 
-	Token:   number  
+	cookies: string 
+	token:   number  
 }
 
 export interface GetRecordResp{
-	Status:  string 
-	RetCode: number  
-	Data:    IFile 
-	Echo:    string 
+	status:  string 
+	retcode: number  
+	data:    IFile 
+	echo:    string 
 }
 
 export type IFile = {
-	File: string
+	file: string
 }
 
 export interface GetImageResp{
-	Status:  string 
-	RetCode: number  
-	Data:    IFile 
-	Echo:    string 
+	status:  string 
+	retcode: number  
+	data:    IFile 
+	echo:    string 
 }
 
 export interface CanSendImageResp{
-	Status:  string                 
-	RetCode: number                  
-	Data:    ICanSendImageOrRecord 
-	Echo:    string                 
+	status:  string                 
+	retcode: number                  
+	data:    ICanSendImageOrRecord 
+	echo:    string                 
 }
 
 export type ICanSendImageOrRecord = {
-	Yes: boolean 
+	yes: boolean 
 }
 
 export interface CanSendRecordResp{
-	Status:  string                 
-	RetCode: number                  
-	Data:    ICanSendImageOrRecord
-	Echo:    string                 
+	status:  string                 
+	retcode: number                  
+	data:    ICanSendImageOrRecord
+	echo:    string                 
 }
 
 export interface GetStatusResp{
-	Status:  string      
-	RetCode: number       
-	Data:    IGetStatus
-	Echo:    string      
+	status:  string      
+	retcode: number       
+	data:    IGetStatus
+	echo:    string      
 }
 
 export interface IGetStatus{
-	Online: boolean 
-	Good:   boolean 
+	online: boolean 
+	good:   boolean 
 }
 
 export interface GetVersioInfoResp{
-	Status:  string          
-	RetCode: number           
-	Data:    IGetVersioInfo 
-	Echo:    string          
+	status:  string          
+	retcode: number           
+	data:    IGetVersioInfo 
+	echo:    string          
 }
 
 export type IGetVersioInfo = {
-	AppName:         string 
-	AppVersion:      string 
-	ProtocolVersion: string  // OneBot 标准版本，如 v11
+	app_name:         string 
+	app_version:      string 
+	protocol_version: string  // OneBot 标准版本，如 v11
 }
 
 export interface SetRestartResp{
-	Status:  string 
-	RetCode: number  
-	Data:    any    
-	Echo:    string 
+	status:  string 
+	retcode: number  
+	data:    any    
+	echo:    string 
 }
 
 export interface CleanCacheResp{
-	Status:  string 
-	RetCode: number  
-	Data:    any    
-	Echo:    string 
+	status:  string 
+	retcode: number  
+	data:    any    
+	echo:    string 
 }
 
 export interface SendMarkdownMsgResp{
-	Status:  string 
-	RetCode: number  
-	Data:    string 
-	Echo:    string 
+	status:  string 
+	retcode: number  
+	data:    string 
+	echo:    string 
 }
 
 export interface SendForwardMsgResp{
-	Status:  string 
-	RetCode: number  
-	Data:    string 
-	Echo:    string 
+	status:  string 
+	retcode: number  
+	data:    string 
+	echo:    string 
 }

@@ -165,7 +165,7 @@ export class Bot {
       .catch(() => null)
   }
 
-  async sendGroupMessage(groupId: number, msg: Msg, autoEscape: boolean = true): Promise<Frame | null> {
+  async sendGroupMessage(groupId: number, msg: Msg, autoEscape: boolean = true): Promise<api.SendMsgResponse | null> {
     if (typeof msg == 'string') {
       msg = Msg.builder().text(msg)
     }
@@ -389,7 +389,7 @@ export class Bot {
     return await this.sendFrameAndWait({
       action: api.SendForwardMsg,
       params: {
-        messages: forwardMsg.Messages
+        messages: forwardMsg.messages
       },
       echo: echo,
     }).then(resp => JSON.parse(JSON.stringify(resp)) || null)
@@ -399,7 +399,7 @@ export class Bot {
   async sendGroupForwardMsg(groupId: number, forwardMsg: api.ForwardParams){
     let sgf = await this.sendGroupForward(groupId, forwardMsg)
     if (sgf != null){
-       let msg = Msg.builder().forward(sgf.Data)
+       let msg = Msg.builder().forward(sgf.data)
        await this.sendGroupMessage(groupId, msg)
     }
   }

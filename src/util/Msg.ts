@@ -156,7 +156,7 @@ export class Msg {
     this.messageList.push({
       type: "image",
       data: {
-        "url": url
+        "file": url
       }
     })
     return this

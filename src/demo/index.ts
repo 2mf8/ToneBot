@@ -32,6 +32,7 @@ EventHandler.handleGroupMessage = async (bot, event) => {
   let groupId = event?.group_id
   let message_id = event?.message_id
   var role: string
+
   if (userId != undefined && groupId != undefined && rawMsg != undefined){
     console.log(`收到群聊消息，群号: ${groupId.toString()}，发送者: ${userId.toString()}，内容: ${rawMsg}`)
       if (rawMsg == "hello"){ 
@@ -59,7 +60,7 @@ EventHandler.handleGroupMessage = async (bot, event) => {
       if (rawMsg == "hello"){
         let msg = Msg.builder().text("好家伙").text("\n消息来自ToneBot").at(userId)
         let a = await bot.sendGroupMessage(groupId, msg)
-        console.log()
+        console.log(a?.data.message_id)
         return
       }
   }
